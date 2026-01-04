@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../classes/Administrateur.php";
+require_once "../../classes/Administrateur.php";
 $admin = Administrateur::getAdminConnected();
 $stats = $admin->getGlobalStats();
 ?>

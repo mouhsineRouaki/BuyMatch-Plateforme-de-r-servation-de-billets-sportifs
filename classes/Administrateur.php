@@ -8,7 +8,7 @@ class Administrateur extends Utilisateur
         parent::__construct($id,$nom, $prenom, $email, $password, $phone, "ORGANISATEUR");
     }
 
-    public static function getOrganisateurConnected(){
+    public static function getAdminConnected(){
         $userConnected = parent::getUserConnected();
         $adm = new Administrateur($userConnected["id_user"],$userConnected["nom"] , $userConnected["prenom"] ,$userConnected["email"] ,$userConnected["password"] ,$userConnected["phone"] );
         return $adm;
@@ -37,7 +37,7 @@ class Administrateur extends Utilisateur
     public function getMatchRequests()
     {
         $stmt = $this->db->query("
-            SELECT * FROM match_sport 
+            SELECT * FROM matchf 
             WHERE statut = 'en_attente'
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -57,8 +57,8 @@ class Administrateur extends Utilisateur
         $stats = [];
 
         $stats['users'] = $this->db->query("SELECT COUNT(*) FROM utilisateur")->fetchColumn();
-        $stats['matchs'] = $this->db->query("SELECT COUNT(*) FROM match_sport")->fetchColumn();
-        $stats['billets'] = $this->db->query("SELECT SUM(nb_billets) FROM statistique")->fetchColumn();
+        $stats['matchs'] = $this->db->query("SELECT COUNT(*) FROM matchf")->fetchColumn();
+        $stats['billets'] = $this->db->query("SELECT SUM(nb_billet_vendus) FROM statistique")->fetchColumn();
         $stats['revenus'] = $this->db->query("SELECT SUM(chiffre_affaire) FROM statistique")->fetchColumn();
 
         return $stats;
