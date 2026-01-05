@@ -36,4 +36,7 @@ class Register extends Utilisateur {
             "id_user" => $idUser
         ];
     }
+    public function logout(): void{
+        session_destroy();
+    }
 }

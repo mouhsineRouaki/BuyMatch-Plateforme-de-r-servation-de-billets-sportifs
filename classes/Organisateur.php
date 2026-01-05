@@ -17,9 +17,7 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
         return $org;
     }
     public function updateProfil(): bool {
-        $sql = "UPDATE utilisateur 
-                SET nom=?, prenom=?, email=?, phone=?, password=? 
-                WHERE id_user=?";
+        $sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, phone=?, password=? WHERE id_user=?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
                 $this->nom,

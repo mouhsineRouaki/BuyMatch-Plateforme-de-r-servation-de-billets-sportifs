@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../classes/Achteur.php";
+require_once "../../classes/Achteur.php";
 $a = Achteur::getAcheteurConnected();
 $tickets = $a->getMyTickets();
 ?>

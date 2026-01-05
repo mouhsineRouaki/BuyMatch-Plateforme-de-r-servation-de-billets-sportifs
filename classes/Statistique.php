@@ -1,12 +1,25 @@
 <?php
 class Statistique {
+    public int $id_statistique ;
     public int $nbBillets;
     public float $chiffreAffaire;
-    public ?float $noteMoyenne;
 
-    public function __construct(int $nbBillets, float $chiffreAffaire, ?float $noteMoyenne) {
+    public function __construct(int $id_statistique,int $nbBillets, float $chiffreAffaire) {
+        $this->id_statistique =  $id_statistique;
         $this->nbBillets = $nbBillets;
         $this->chiffreAffaire = $chiffreAffaire;
-        $this->noteMoyenne = $noteMoyenne;
     }
+    public function __get($name){
+        return $this->$name;
+    }
+    public function __set($name, $value){
+        $this->$name = $value;
+    }
+
+    public function incrementNbBillets($value){
+        $this->nbBillets += $value ;
+    }
+
+
+
 }
