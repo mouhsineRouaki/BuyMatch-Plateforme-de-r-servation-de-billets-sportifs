@@ -10,24 +10,24 @@ $acheteur = Achteur::getAcheteurConnected();
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gradient-to-b from-black to-gray-900 text-white">
+<body class="bg-white text-gray-900">
 
-<nav class="bg-black/70 border-b border-white/10 px-6 py-4 flex justify-between">
+<nav class="bg-gray-900 text-white px-6 py-4 flex justify-between">
     <h1 class="text-2xl font-bold">🎫 BuyMatch</h1>
-    <a href="../logout.php" class="bg-red-600 px-4 py-2 rounded-lg">Déconnexion</a>
+    <a href="../logout.php" class="bg-red-600 px-4 py-2 rounded">Déconnexion</a>
 </nav>
 
 <section class="max-w-7xl mx-auto py-20 px-6">
-    <h2 class="text-4xl font-bold mb-10">Bienvenue 👋</h2>
+    <h2 class="text-4xl font-bold mb-12">Espace Acheteur</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <a href="matchs.php" class="bg-white/10 p-8 rounded-xl hover:scale-105 transition">
+        <a href="matches.php" class="bg-gray-100 p-8 rounded-xl shadow hover:shadow-lg">
             ⚽ Matchs disponibles
         </a>
-        <a href="mesBillets.php" class="bg-white/10 p-8 rounded-xl hover:scale-105 transition">
+        <a href="mesBillets.php" class="bg-gray-100 p-8 rounded-xl shadow hover:shadow-lg">
             🎟️ Mes billets
         </a>
-        <a href="profil.php" class="bg-white/10 p-8 rounded-xl hover:scale-105 transition">
+        <a href="../profil.php" class="bg-gray-100 p-8 rounded-xl shadow hover:shadow-lg">
             👤 Mon profil
         </a>
     </div>

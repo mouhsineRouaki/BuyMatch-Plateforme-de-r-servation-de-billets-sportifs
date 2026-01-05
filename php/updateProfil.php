@@ -1,7 +1,13 @@
 <?php
 session_start();
 require_once '../classes/Organisateur.php';
-$org = Organisateur::getOrganisateurConnected();
+require_once '../classes/Achteur.php';
+$org = null;
+if($_SESSION["role"] === "ACHTEUR"){
+    $org = Organisateur::getOrganisateurConnected();
+}else{
+    $org = Achteur::getAcheteurConnected();
+}
 $org->nom = $_POST["nom"];
 $org->prenom = $_POST["prenom"];
 $org->email = $_POST["email"];

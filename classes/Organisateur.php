@@ -2,6 +2,8 @@
 require_once "Utilisateur.php";
 require_once "Equipe.php";
 require_once "Category.php";
+require_once "../config/Database.php";
+require_once "IModifiableProfil.php";
 
 class Organisateur extends Utilisateur implements IModifiableProfil {
 

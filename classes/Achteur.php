@@ -1,15 +1,18 @@
 <?php
+require_once "IModifiableProfil.php";
 require_once "Utilisateur.php";
-require_once "Database.php";
+
 
 class Achteur extends Utilisateur implements IModifiableProfil {
 
+    public function __construct(int $id ,string $nom,string $prenom,string $email,string $password,?string $phone) {
+        parent::__construct($id,$nom, $prenom, $email, $password, $phone, "ACHTEUR");
+    }
+
     public static function getAcheteurConnected(): Achteur {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'acheteur') {
-            header("Location: ../auth/login.php");
-            exit;
-        }
-        return new Achteur($_SESSION['user']);
+        $userConnected = parent::getUserConnected();
+        return new Achteur($userConnected["id_user"],$userConnected["nom"] , $userConnected["prenom"] ,$userConnected["email"] ,$userConnected["password"] ,$userConnected["phone"] );
+    
     }
 
     public function updateProfil() {

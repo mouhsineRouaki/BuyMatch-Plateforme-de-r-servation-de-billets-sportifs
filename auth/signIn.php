@@ -7,8 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login =new  Login($email,$password);
     $result = $login->connecter();
     if ($result['success']) {
-        if($result["role"] === "ACHTEUR"){
-            header("Location: ../pages/admin/dashboard.php");
+        if($result["role"] === "ACHETEUR"){
+            header("Location: ../pages/achteur/dashboard.php");
         }else if ($result["role"] === "ORGANISATEUR"){
             header("Location: ../pages/organisateur/dashbord.php");
         }else{
