@@ -3,13 +3,7 @@ session_start();
 require_once "../../classes/Administrateur.php";
 $admin = Administrateur::getAdminConnected();
 $matchs = $admin->getMatchRequests();
-$m['equipe1_nom'] = "Psg";
-$m['equipe1_logo'] = "";
-$m['equipe2_nom']= "fcb";
-$m['equipe2_logo']="";
-$m['date'] = "2025-10-16";
-$m['heure'] = "10:00";
-$m['duree'] = "60";
+
 ?>
 
 <!DOCTYPE html>
@@ -68,6 +62,10 @@ $m['duree'] = "60";
 
         <div class="space-y-8">
             <?php foreach ($matchs as $m): ?>
+                <?php 
+                 $listNom = explode(',' ,$m['nom']);
+                 $listLogo = explode(',' ,$m['logo']);
+                ?>
                 <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
 
                     <!-- ================= MATCH HEADER ================= -->
@@ -78,11 +76,11 @@ $m['duree'] = "60";
 
                             <!-- Équipe 1 -->
                             <div class="flex items-center gap-3">
-                                <img src="<?= $m['equipe1_logo'] ?? '../../assets/team.png' ?>"
+                                <img src="<?= $listLogo[0] ?? '../../assets/team.png' ?>"
                                      class="w-14 h-14 object-contain"
                                      alt="Logo équipe 1">
                                 <span class="font-bold text-lg">
-                                    <?= htmlspecialchars($m['equipe1_nom']) ?>
+                                    <?= htmlspecialchars($listNom[0]) ?>
                                 </span>
                             </div>
 
@@ -90,11 +88,11 @@ $m['duree'] = "60";
 
                             <!-- Équipe 2 -->
                             <div class="flex items-center gap-3">
-                                <img src="<?= $m['equipe2_logo'] ?? '../../assets/team.png' ?>"
+                                <img src="<?= $listLogo[1] ?? '../../assets/team.png' ?>"
                                      class="w-14 h-14 object-contain"
                                      alt="Logo équipe 2">
                                 <span class="font-bold text-lg">
-                                    <?= htmlspecialchars($m['equipe2_nom']) ?>
+                                    <?= htmlspecialchars($listNom[1]) ?>
                                 </span>
                             </div>
                         </div>
@@ -119,7 +117,7 @@ $m['duree'] = "60";
                     <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
 
                         <div class="flex items-center gap-2">
-                            📅 <span class="font-semibold"><?= $m['date'] ?></span>
+                            📅 <span class="font-semibold"><?= $m['date_match'] ?></span>
                         </div>
 
                         <div class="flex items-center gap-2">

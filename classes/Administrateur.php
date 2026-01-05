@@ -37,8 +37,11 @@ class Administrateur extends Utilisateur
     public function getMatchRequests()
     {
         $stmt = $this->db->query("
-            SELECT * FROM matchf 
-            WHERE statut = 'en_attente'
+            SELECT m.* ,GROUP_CONCAT(distinct e.nom ) as nom ,GROUP_CONCAT(Distinct e.logo) as logo  FROM matchf m
+            inner join match_equipe me on me.id_match = m.id_match
+            inner join equipe e on e.id_equipe = me.id_equipe 
+            WHERE statut = 'EN_ATTENTE'
+            group by m.id_match
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
