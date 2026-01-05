@@ -49,7 +49,7 @@ class Administrateur extends Utilisateur
     public function updateMatchStatus($matchId, $status)
     {
         $stmt = $this->db->prepare("
-            UPDATE match_sport 
+            UPDATE matchf
             SET statut = ?
             WHERE id_match = ?
         ");

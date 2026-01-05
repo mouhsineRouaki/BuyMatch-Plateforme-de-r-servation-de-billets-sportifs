@@ -99,13 +99,13 @@ $matchs = $admin->getMatchRequests();
 
                         <!-- ===== ACTIONS ===== -->
                         <div class="flex gap-4">
-                            <a href="updateMatch.php?id=<?= $m['id_match'] ?>&status=accepte"
+                            <a href="../../php/administrateur/acceptationMatch.php?id=<?= $m['id_match'] ?>&status=ACCEPTED"
                                class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold
                                       hover:bg-green-700 transition">
                                 Accepter
                             </a>
 
-                            <a href="updateMatch.php?id=<?= $m['id_match'] ?>&status=refuse"
+                            <a href="../../php/administrateur/acceptationMatch.php?id=<?= $m['id_match'] ?>&status=REFUSER"
                                class="px-6 py-3 bg-red-600 text-white rounded-lg font-semibold
                                       hover:bg-red-700 transition">
                                 Refuser
