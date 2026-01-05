@@ -1,7 +1,13 @@
 <?php
 session_start();
 require_once '../classes/Organisateur.php';
-$org = Organisateur::getOrganisateurConnected();
+$org = null;
+if($_SESSION["role"] === "ACHTEUR"){
+    $org = Organisateur::getOrganisateurConnected();
+}else{
+    
+}
+
 ?>
 
 <!DOCTYPE html>

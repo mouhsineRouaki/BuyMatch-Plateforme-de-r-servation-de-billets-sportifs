@@ -3,7 +3,7 @@ require_once "Utilisateur.php";
 require_once "Equipe.php";
 require_once "Category.php";
 
-class Organisateur extends Utilisateur {
+class Organisateur extends Utilisateur implements IModifiableProfil {
 
     public function __construct(int $id ,string $nom,string $prenom,string $email,string $password,?string $phone) {
         parent::__construct($id,$nom, $prenom, $email, $password, $phone, "ORGANISATEUR");
@@ -98,6 +98,9 @@ class Organisateur extends Utilisateur {
         }
 
         return $matchs;
+    }
+    public function logout(): void{
+        session_destroy();
     }
 }
 

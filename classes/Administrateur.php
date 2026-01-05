@@ -4,13 +4,15 @@ require_once __DIR__ . "/../config/Database.php";
 
 class Administrateur extends Utilisateur
 {
-    public function __construct(int $id ,string $nom,string $prenom,string $email,string $password,?string $phone) {
-        parent::__construct($id,$nom, $prenom, $email, $password, $phone, "ORGANISATEUR");
+    public function __construct(int $id, string $nom, string $prenom, string $email, string $password, ?string $phone)
+    {
+        parent::__construct($id, $nom, $prenom, $email, $password, $phone, "ORGANISATEUR");
     }
 
-    public static function getAdminConnected(){
+    public static function getAdminConnected()
+    {
         $userConnected = parent::getUserConnected();
-        $adm = new Administrateur($userConnected["id_user"],$userConnected["nom"] , $userConnected["prenom"] ,$userConnected["email"] ,$userConnected["password"] ,$userConnected["phone"] );
+        $adm = new Administrateur($userConnected["id_user"], $userConnected["nom"], $userConnected["prenom"], $userConnected["email"], $userConnected["password"], $userConnected["phone"]);
         return $adm;
     }
 
@@ -19,7 +21,7 @@ class Administrateur extends Utilisateur
         $stmt = $this->db->query("
             SELECT id_user, nom, prenom, email, role, actif 
             FROM utilisateur
-            WHERE role != 'admin'
+            WHERE role != 'ADMINISTRATEUR'
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -69,11 +71,18 @@ class Administrateur extends Utilisateur
     public function getAllComments()
     {
         $stmt = $this->db->query("
-            SELECT c.*, u.nom, u.prenom 
+            SELECT c.*, u.nom, u.prenom , group_concat(Distinct e.nom) as nomE , group_concat(distinct e.logo) as logoE, m.*
             FROM commentaire c
-            JOIN utilisateur u ON u.id_user = c.id_user
-            ORDER BY c.date_creation DESC
+            inner join matchf m on c.id_match = m.id_match 
+            inner join match_equipe me on m.id_match = m.id_match 
+            inner join equipe e on e.id_equipe = me.id_equipe
+            JOIN utilisateur u ON u.id_user = c.id_acheteur
+            group by c.id_commentaire
+            ORDER BY c.date_commentaire DESC
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function logout(): void{
+        session_destroy();
     }
 }

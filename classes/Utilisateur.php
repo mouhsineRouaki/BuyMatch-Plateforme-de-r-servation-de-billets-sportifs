@@ -59,7 +59,7 @@ abstract class Utilisateur {
         return [
             "success" => true,
             "message" => "Inscription réussie",
-            "id_user" => $this->id_user
+            "id_user" => $this->id
         ];
     }
 
@@ -119,8 +119,5 @@ abstract class Utilisateur {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function logout(): void {
-        session_start();
-        session_destroy();
-    }
+    abstract public function logout(): void;
 }

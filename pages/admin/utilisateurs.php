@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../classes/Administrateur.php";
+require_once "../../classes/Administrateur.php";
 $admin = Administrateur::getAdminConnected();
 $users = $admin->getAllUsers();
 ?>
@@ -93,7 +93,7 @@ $users = $admin->getAllUsers();
                     </div>
 
                     <!-- ================= ACTION ================= -->
-                    <form method="post" action="toggleUser.php">
+                    <form method="post" action="../../php/Administrateur/toggleUser.php">
                         <input type="hidden" name="id" value="<?= $u['id_user'] ?>">
                         <input type="hidden" name="status" value="<?= $u['actif'] ? 0 : 1 ?>">
 

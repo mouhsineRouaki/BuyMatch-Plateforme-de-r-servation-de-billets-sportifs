@@ -9,7 +9,7 @@ $comments = $admin->getAllComments();
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Admin – Commentaires | BuyMatch</title>
+    <title>Admin - Commentaires | BuyMatch</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -43,7 +43,7 @@ $comments = $admin->getAllComments();
     <div class="max-w-7xl mx-auto px-4">
         <h1 class="text-4xl font-bold mb-2">Commentaires utilisateurs</h1>
         <p class="text-gray-300">
-            Consultez les avis et retours laissés sur la plateforme
+            Avis laissés sur les matchs de football
         </p>
     </div>
 </section>
@@ -60,31 +60,70 @@ $comments = $admin->getAllComments();
             </p>
         <?php endif; ?>
 
-        <div class="space-y-6">
+        <div class="space-y-8">
             <?php foreach ($comments as $c): ?>
+                <?php
+                    $listNom = explode(",",$c["nomE"]);
+                    $listLogo = explode(",",$c["logoE"]);
+                ?>
                 <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
 
-                    <!-- ================= USER ================= -->
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center
-                                    text-white font-bold text-lg">
-                            <?= strtoupper(substr($c['nom'], 0, 1)) ?>
+                    <!-- ================= MATCH ================= -->
+                    <div class="flex items-center justify-between mb-4">
+
+                        <div class="flex items-center gap-6">
+                            <!-- Équipe 1 -->
+                            <div class="flex items-center gap-2">
+                                <img src="<?= htmlspecialchars($listLogo[0]) ?>"
+                                     class="w-10 h-10 object-contain"
+                                     alt="logo">
+                                <span class="font-semibold">
+                                    <?= htmlspecialchars($listNom[0]) ?>
+                                </span>
+                            </div>
+
+                            <span class="font-bold text-gray-500">VS</span>
+
+                            <!-- Équipe 2 -->
+                            <div class="flex items-center gap-2">
+                                <img src="<?= htmlspecialchars($listLogo[1]) ?>"
+                                     class="w-10 h-10 object-contain"
+                                     alt="logo">
+                                <span class="font-semibold">
+                                    <?= htmlspecialchars($listNom[1]) ?>
+                                </span>
+                            </div>
                         </div>
 
-                        <div>
-                            <p class="font-bold text-lg">
-                                <?= htmlspecialchars($c['nom']) ?>
-                                <?= htmlspecialchars($c['prenom']) ?>
-                            </p>
-                            <p class="text-sm text-gray-500">
-                                🕒 <?= $c['date_creation'] ?>
-                            </p>
+                        <!-- NOTE -->
+                        <div class="flex items-center gap-1">
+                            <?php for ($i = 1; $i <= $c["note"]; $i++): ?>
+                                <span class="<?= $i <= $c['note'] ? 'text-yellow-400' : 'text-gray-300' ?>">
+                                    ⭐
+                                </span>
+                            <?php endfor; ?>
                         </div>
                     </div>
 
                     <!-- ================= COMMENT ================= -->
-                    <div class="bg-gray-50 rounded-lg p-4 text-gray-700 leading-relaxed">
+                    <div class="bg-gray-50 rounded-lg p-4 text-gray-700 leading-relaxed mb-4">
                         <?= nl2br(htmlspecialchars($c['contenu'])) ?>
+                    </div>
+
+                    <!-- ================= USER ================= -->
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center
+                                        text-white font-bold">
+                                <?= strtoupper(substr($c['nom'], 0, 1)) ?>
+                            </div>
+                            <span class="font-semibold text-gray-700">
+                                <?= htmlspecialchars($c['nom']) ?>
+                                <?= htmlspecialchars($c['prenom']) ?>
+                            </span>
+                        </div>
+
+                        <span>🕒 <?= $c['date_commentaire'] ?></span>
                     </div>
 
                 </div>

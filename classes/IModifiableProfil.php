@@ -1,5 +1,5 @@
 <?php 
 interface IModifiableProfil{
-    public function modifierProfile();
+    public function updateProfil();
     
 }
