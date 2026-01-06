@@ -1,6 +1,9 @@
 <?php
 require_once "IModifiableProfil.php";
+require_once "Equipe.php" ;
 require_once "Utilisateur.php";
+require_once "MatchSport.php";
+require_once "Statistique.php" ;
 
 
 class Achteur extends Utilisateur implements IModifiableProfil {
@@ -22,14 +25,26 @@ class Achteur extends Utilisateur implements IModifiableProfil {
     }
 
     public function getAvailableMatchs(): array {
-        return $this->db->query("
-            SELECT m.*, e1.nom AS equipe1, e1.logo AS logo1,
-                         e2.nom AS equipe2, e2.logo AS logo2
-            FROM match_football m
-            JOIN equipe e1 ON m.equipe1_id = e1.id
-            JOIN equipe e2 ON m.equipe2_id = e2.id
-            WHERE m.statut = 'accepte'
-        ")->fetchAll();
+        $stmt =  $this->db->prepare("
+            SELECT m.*, group_concat(e.id_equipe) as idE , group_concat(e.nom) as nomE, group_concat(e.logo) as logoE
+            FROM matchf m
+            JOIN match_equipe me on me.id_match = m.id_match
+            JOIN equipe e ON me.id_equipe = e.id_equipe 
+            WHERE m.statut = 'ACCEPTED'
+            group by m.id_match
+        ");
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $matchs = [];
+        foreach($result as $r){
+            $listId = explode(",",$r["idE"]);
+            $listNom = explode(",",$r["nomE"]);
+            $listLogo = explode(",",$r["logoE"]);
+            $equipe1 = new Equipe($listId[0] , $listNom[0] , $listLogo[0]);
+            $equipe2 = new Equipe($listId[1] , $listNom[1] , $listLogo[1]);
+            $matchs[] = new MatchSport($r["id_match"] ,$r["date_match"] , $r["heure"] ,$r["duree"] , $r["id_statistique"] , $equipe1 , $equipe2 );
+        }
+        return $matchs;
     }
 
     public function buyTicket(array $data): bool {
@@ -65,17 +80,15 @@ class Achteur extends Utilisateur implements IModifiableProfil {
         ")->execute([$this->id])->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addComment(array $data): bool {
+    public function addComment(Commentaire $commentaire): bool {
         $sql = "INSERT INTO commentaire
                 (utilisateur_id, match_id, contenu, note)
                 VALUES (?, ?, ?, ?)";
 
         return $this->db->prepare($sql)->execute([
             $this->id,
-            $data['match_id'],
-            $data['contenu'],
-            $data['note']
         ]);
+        $commentaire->insererComentaire ;
     }
     public function logout(): void{
         session_destroy();

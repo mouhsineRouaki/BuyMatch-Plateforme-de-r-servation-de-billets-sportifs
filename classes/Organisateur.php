@@ -2,7 +2,6 @@
 require_once "Utilisateur.php";
 require_once "Equipe.php";
 require_once "Category.php";
-require_once "../config/Database.php";
 require_once "IModifiableProfil.php";
 
 class Organisateur extends Utilisateur implements IModifiableProfil {
@@ -19,16 +18,7 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
     public function updateProfil(): bool {
         $sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, phone=?, password=? WHERE id_user=?";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-                $this->nom,
-                $this->prenom,
-                $this->email,
-                $this->phone,
-                password_hash($this->password, PASSWORD_DEFAULT),
-                $this->id
-        ]);
-
-        return true;
+        return $stmt->execute([$this->nom,$this->prenom,$this->email,$this->phone,password_hash($this->password, PASSWORD_DEFAULT),$this->id]);
     }
 
     public function creerMatch(string $date,string $heure,int $duree,string $statut,array $equipes,array $categories): int {

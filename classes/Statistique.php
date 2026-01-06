@@ -4,7 +4,7 @@ class Statistique {
     public int $nbBillets;
     public float $chiffreAffaire;
 
-    public function __construct(int $id_statistique,int $nbBillets, float $chiffreAffaire) {
+    public function __construct($id_statistique,$nbBillets,$chiffreAffaire) {
         $this->id_statistique =  $id_statistique;
         $this->nbBillets = $nbBillets;
         $this->chiffreAffaire = $chiffreAffaire;

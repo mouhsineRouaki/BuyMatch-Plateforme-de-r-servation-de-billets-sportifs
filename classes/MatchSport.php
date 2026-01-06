@@ -1,6 +1,7 @@
 <?php
+require_once "Commentaire.php";
 
-use Dom\Comment;
+
 class MatchSport {
 
     public int $id_match;
@@ -19,15 +20,15 @@ class MatchSport {
 
     public function __construct(int $id, string $date, string $heure , $duree , $id_statistique , $equipe1 , $equipe2) {
         $this->db = Database::getInstance()->getConnection();
-        $this->statistique = self::getStatistique(); 
-        $this->commentaires = self::getCommentaires();
-        $this->id = $id;
+        $this->id_match = $id;
         $this->date_match = $date;
         $this->heure = $heure;
         $this->duree = $duree;
         $this->id_statistique = $id_statistique;
         $this->equipe1 = $equipe1 ; 
         $this->equipe2 = $equipe2;
+        $this->statistique = self::getStatistique(); 
+        $this->commentaires = self::getCommentaires();
 
     }
 
@@ -42,7 +43,7 @@ class MatchSport {
         $stmt = $this->db->prepare("select * from statistique where id_statistique = ?");
         $stmt->execute([$this->id_statistique]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return new Statistique($result["id_statistique"] , $result["nb_billets_vendus"] , $result["chiffre_affaire"]);
+        return new Statistique($this->id_statistique , $result["nb_billet_vendus"] , $result["chiffre_affaire"]);
     }
     public function getCommentaires(){
         $stmt = $this->db->prepare("select * from commentaire where id_match = ?");
@@ -50,7 +51,7 @@ class MatchSport {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $commentaires = [];
         foreach($result as $r){
-            $commentaires[] = new Commentaire($r["id_commentaire"], $r["contenu"] , $r["note"] , $r["date_commentaire"] ,$r["id_match"],$r["id_achteur"]);
+            $commentaires[] = new Commentaire($r["id_commentaire"], $r["contenu"] , $r["note"] , $r["date_commentaire"] ,$r["id_match"],$r["id_acheteur"]);
         }
         return $commentaires;
     }
