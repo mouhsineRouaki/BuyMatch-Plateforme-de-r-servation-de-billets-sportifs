@@ -16,6 +16,6 @@ $ticket = [
 ];
 
 $match = MatchSport::getMatchById($id_match);
-if($ach->AcheterBillet($id_match , $prix , $place , $match  ,$ticket)){
+if($ach->AcheterBillet($id_match , $prix , $place , $match )){
     header("Location: ../../pages/achteur/acheterBillet.php?id={$id_match}");
 }

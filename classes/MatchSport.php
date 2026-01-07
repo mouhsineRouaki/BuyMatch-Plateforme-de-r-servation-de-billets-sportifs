@@ -91,4 +91,13 @@ class MatchSport {
         return  new MatchSport($r["id_match"] ,$r["date_match"] , $r["heure"] ,$r["duree"] ,$r["stade"], $r["id_statistique"] , $equipe1 , $equipe2 );
     }
 
+    public function getCategoryById($id):?Category{
+        for( $i = 0 ; $i <= count($this->categories) ; $i++){
+            $cat = $this->categories[$i];
+            if($cat->id_category === $id){
+                return $cat;
+            }
+        }
+    }
+
 }
