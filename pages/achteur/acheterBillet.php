@@ -41,7 +41,6 @@ if (!$match) {
         </div>
     </nav>
 
-    <!-- ================= HERO ================= -->
     <section class="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-14">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl font-bold mb-2">Acheter un billet</h1>
@@ -51,11 +50,9 @@ if (!$match) {
         </div>
     </section>
 
-    <!-- ================= CONTENT ================= -->
     <section class="py-16 bg-gray-50 min-h-screen">
         <div class="max-w-4xl mx-auto px-4">
 
-            <!-- ===== MATCH CARD ===== -->
             <div class="bg-white rounded-xl shadow-lg p-8 mb-10">
 
                 <div class="flex justify-center items-center gap-8 mb-6">
@@ -123,13 +120,6 @@ if (!$match) {
                     <p id="total_max" class="text-sm text-gray-500 mt-1">Maximum 4 billets par match</p>
                 </div>
 
-                <!-- Quantité -->
-                <div>
-                    <label class="block font-semibold mb-2">🔢 Quantité</label>
-                    <input type="number" id="quantite" name="nbTicket" min="1" max="4" value="1" required
-                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500">
-                    <p class="text-sm text-gray-500 mt-1">Maximum 4 billets par match</p>
-                </div>
 
                 <!-- Prix -->
                 <div class="bg-gray-100 p-4 rounded-lg">
@@ -158,7 +148,6 @@ if (!$match) {
     </footer>
     <script>
         const categorieSelect = document.getElementById('categorie');
-        const quantiteInput = document.getElementById('quantite');
         const prixInput = document.getElementById('prix');
         const placeTotal = document.getElementById('total_max');
         placeTotal.innerHTML = categorieSelect.options[categorieSelect.selectedIndex].dataset.availible + "/" + categorieSelect.options[categorieSelect.selectedIndex].dataset.place + "availible place"
@@ -167,7 +156,7 @@ if (!$match) {
             const prixUnitaire = parseFloat(
                 categorieSelect.options[categorieSelect.selectedIndex].dataset.prix
             );
-            const quantite = parseInt(quantiteInput.value) || 1;
+            const quantite =  1;
             prixInput.value = (prixUnitaire * quantite).toFixed(2);
         }
 
@@ -175,7 +164,6 @@ if (!$match) {
             calculerPrix();
             placeTotal.innerHTML = categorieSelect.options[categorieSelect.selectedIndex].dataset.availible + "/" + categorieSelect.options[categorieSelect.selectedIndex].dataset.place + " availible place"
         });
-        quantiteInput.addEventListener('input', calculerPrix);
 
         calculerPrix();
 
