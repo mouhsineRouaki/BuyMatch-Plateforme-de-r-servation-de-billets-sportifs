@@ -12,6 +12,13 @@ class Equipe {
         $this->db = Database::getInstance()->getConnection();
     }
 
+    public function __get($name){
+        return $this->$name;
+    }
+    public function __set($name, $value){
+        $this->$name = $value;
+    }
+
     public function save(): int {
         $stmt = $this->db->prepare("INSERT INTO equipe (id,nom , logo) VALUES (?,?,?)");
         $stmt->execute([$this->id ,$this->nom , $this->logo]);
