@@ -4,6 +4,7 @@ require_once "../../classes/Achteur.php";
 
 $acheteur = Achteur::getAcheteurConnected();
 
+
 if (!isset($_GET['id'])) {
     header("Location: matchs.php");
     exit;
@@ -97,7 +98,6 @@ if (!$match) {
             <!-- ===== FORM ===== -->
             <form method="POST" class="bg-white rounded-2xl shadow-xl p-8 space-y-6" action="../../php/achteur/acheterBilletProcess.php">
                 <input type="hidden" name="id_match" value="<?= $matchId ?>">
-                <!-- Catégorie -->
                 <div>
                     <label class="block font-semibold mb-2">🎟 Catégorie</label>
                     <select id="categorie" name="categorie" required
@@ -105,7 +105,7 @@ if (!$match) {
                         <?php foreach ($match->categories as $c): ?>
                             <option value="<?= $c->prix ?>" data-prix="<?= $c->prix ?>" data-id="<?= $c->id_category ?>"
                                 data-place="<?= $c->nb_place ?>" data-availible="<?= $c->getNbplacAavailible($matchId) ?>">
-                                <?= htmlspecialchars($c->nom) ?> – <?= number_format($c->prix, 2) ?> €
+                                <?= htmlspecialchars($c->nom) ?> - <?= number_format($c->prix, 2) ?> €
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -121,14 +121,12 @@ if (!$match) {
                 </div>
 
 
-                <!-- Prix -->
                 <div class="bg-gray-100 p-4 rounded-lg">
-                    <label class="block font-semibold mb-2">💰 Prix total (€)</label>
+                    <label class="block font-semibold mb-2">Prix total (€)</label>
                     <input type="number" id="prix" name="prix" readonly
                         class="w-full px-4 py-3 border rounded-lg bg-gray-200 font-bold text-lg">
                 </div>
 
-                <!-- Bouton -->
                 <button type="submit"
                     class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg transition">
                     ✅ Confirmer l'achat

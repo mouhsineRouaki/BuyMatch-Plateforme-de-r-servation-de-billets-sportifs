@@ -8,6 +8,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use FPDF;
+
+
 
 
 
@@ -94,7 +97,6 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
             $this->db->commit();
 
-            $pdf = $this->generateTicketPDF($matchSport , $ticket);
 
             $this->sendTicketMail($qr, $prix,$matchSport , $ticket);
 
@@ -125,9 +127,11 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         $mail->addAddress('rkmohsin66@gmail.com', $this->nom);
 
         $mail->isHTML(true);
-        $mail->Subject = '🎫 Votre billet BuyMatch';
+        $mail->Subject = 'Votre billet BuyMatch';
+        $mail->body = "Bonjour ";
 
-        $mail->Body = $this->generateTicketPDF($matchSport , $ticket);
+        $fillName = $this->generateTicketPDF($matchSport , $ticket);
+        $mail->addAttachment($fillName);
 
         $mail->send();
 
@@ -165,53 +169,58 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
     }
     public function generateTicketPDF(MatchSport $match, array $ticket)
     {
-        $pdf = new FPDF();
-        $pdf->AddPage();
+    $pdf = new FPDF();
+    $pdf->AddPage();
 
-        // Titre
-        $pdf->SetFont('Arial', 'B', 16);
-        $pdf->Cell(0, 10, 'BILLET OFFICIEL', 0, 1, 'C');
-        $pdf->Ln(5);
+    $pdf->SetFont('Arial', 'B', 16);
+    $pdf->Cell(0, 10, 'BILLET OFFICIEL', 0, 1, 'C');
+    $pdf->Ln(5);
 
-        // Match
-        $pdf->SetFont('Arial', 'B', 14);
-        $pdf->Cell(0, 10,
-            $match->equipe1->nom . ' VS ' . $match->equipe2->nom,
-            0, 1, 'C'
-        );
+    $pdf->SetFont('Arial', 'B', 14);
+    $pdf->Cell(
+        0,
+        10,
+        $match->equipe1->nom . ' VS ' . $match->equipe2->nom,
+        0,
+        1,
+        'C'
+    );
 
-        $pdf->Ln(5);
+    $pdf->Ln(5);
 
-        // Infos match
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(0, 8, 'Date : ' . $match->date_match, 0, 1);
-        $pdf->Cell(0, 8, 'Heure : ' . $match->heure, 0, 1);
-        $pdf->Cell(0, 8, 'Stade : ' . $match->__get('stade'), 0, 1);
-        $pdf->Ln(5);
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(0, 8, 'Date : ' . $match->date_match, 0, 1);
+    $pdf->Cell(0, 8, 'Heure : ' . $match->heure, 0, 1);
+    $pdf->Cell(0, 8, 'Stade : ' . $match->__get('stade'), 0, 1);
+    $pdf->Ln(5);
 
-        // Infos billet
-        $pdf->SetFont('Arial', 'B', 13);
-        $pdf->Cell(0, 10, 'Informations du billet', 0, 1);
+    $pdf->SetFont('Arial', 'B', 13);
+    $pdf->Cell(0, 10, 'Informations du billet', 0, 1);
 
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(0, 8, 'Nom : ' . $ticket['nom_client'], 0, 1);
-        $pdf->Cell(0, 8, 'Categorie : ' . $ticket['categorie'], 0, 1);
-        $pdf->Cell(0, 8, 'Place : ' . $ticket['place'], 0, 1);
-        $pdf->Cell(0, 8, 'Prix : ' . $ticket['prix'] . ' DT', 0, 1);
-        $pdf->Cell(0, 8, 'Reference : ' . $ticket['reference'], 0, 1);
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Cell(0, 8, 'Nom : ' . $ticket['nom_client'], 0, 1);
+    $pdf->Cell(0, 8, 'Categorie : ' . $ticket['categorie'], 0, 1);
+    $pdf->Cell(0, 8, 'Place : ' . $ticket['place'], 0, 1);
+    $pdf->Cell(0, 8, 'Prix : ' . number_format($ticket['prix'], 2) . ' DT', 0, 1);
+    $pdf->Cell(0, 8, 'Reference : ' . $ticket['reference'], 0, 1);
 
-        $pdf->Ln(10);
+    $pdf->Ln(10);
 
-        // Footer
-        $pdf->SetFont('Arial', 'I', 10);
-        $pdf->Cell(0, 10, 'Veuillez presenter ce billet a l\'entree.', 0, 1, 'C');
+    $pdf->SetFont('Arial', 'I', 10);
+    $pdf->Cell(0, 10, 'Veuillez presenter ce billet a l\'entree.', 0, 1, 'C');
 
-        // Sauvegarde
-        $fileName = 'ticket_' . $ticket['reference'] . '.pdf';
-        $pdf->Output('F', $fileName);
-
-        return $fileName;
+    $path = __DIR__ . '/../tickets/';
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
     }
+
+    $fileName = $path . 'ticket_' . $ticket['reference'] . '.pdf';
+    $pdf->Output('F', $fileName);
+
+    return $fileName;
+}
+
+
 
     public function logout(): void
     {
