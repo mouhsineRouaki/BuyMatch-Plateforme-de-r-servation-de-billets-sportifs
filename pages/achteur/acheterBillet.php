@@ -98,6 +98,8 @@ if (!$match) {
             <!-- ===== FORM ===== -->
             <form method="POST" class="bg-white rounded-2xl shadow-xl p-8 space-y-6" action="../../php/achteur/acheterBilletProcess.php">
                 <input type="hidden" name="id_match" value="<?= $matchId ?>">
+                <input type="hidden" id="idC" name="id_category" value="<?= $match->categories[0]->id_category ?>">
+
                 <div>
                     <label class="block font-semibold mb-2">🎟 Catégorie</label>
                     <select id="categorie" name="categorie" required
@@ -160,6 +162,7 @@ if (!$match) {
 
         categorieSelect.addEventListener('change', () => {
             calculerPrix();
+            document.getElementById('idC').value = categorieSelect.options[categorieSelect.selectedIndex].dataset.id
             placeTotal.innerHTML = categorieSelect.options[categorieSelect.selectedIndex].dataset.availible + "/" + categorieSelect.options[categorieSelect.selectedIndex].dataset.place + " availible place"
         });
 

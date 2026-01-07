@@ -60,7 +60,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $matchs;
     }
 
-    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport): bool
+    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport , Category $categorie): bool
     {
         try {
             $this->db->beginTransaction();
@@ -97,7 +97,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             $this->db->commit();
 
 
-            $this->sendTicketMail($qr, $prix,$matchSport);
+            $this->sendTicketMail($qr, $prix,$place,$matchSport,$categorie);
 
             return true;
 
@@ -106,7 +106,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             return false;
         }
     }
-private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSport): void
+private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $matchSport , Category $categorie): void
 {
     try {
         $mail = new PHPMailer(true);
@@ -137,7 +137,7 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         ";
 
 
-        $fillName = $this->generateTicketPDF($matchSport );
+        $fillName = $this->generateTicketPDF($matchSport,$prix,$place,$categorie,$qrCode );
         $mail->addAttachment($fillName);
 
         $mail->send();
@@ -174,7 +174,7 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         ]);
         $commentaire->insererComentaire;
     }
-    public function generateTicketPDF(MatchSport $match, string $categorie, int $place, float $prix, string $reference, string $qrCode)
+    public function generateTicketPDF(MatchSport $match, $prix , $place , Category $categorie, string $qrCode)
 {
     $pdf = new FPDF('P', 'mm', array(200, 100)); // Format ticket-like : ~200mm x 100mm
     $pdf->AddPage();
@@ -223,10 +223,10 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
 
     $pdf->SetFont('Arial', '', 12);
     $pdf->Cell(0, 8, utf8_decode('Nom du spectateur : ') . $this->nom ." ".$this->prenom, 0, 1);
-    $pdf->Cell(0, 8, utf8_decode('Catégorie : ') . $categorie, 0, 1);
-    $pdf->Cell(0, 8, utf8_decode('Place : ') . $place, 0, 1);
-    $pdf->Cell(0, 8, 'Prix : ' . number_format($prix, 2) . ' DT', 0, 1);
-    $pdf->Cell(0, 8, 'Reference : ' . $reference, 0, 1);
+    $pdf->Cell(0, 8, utf8_decode('Catégorie : ') . $categorie->nom, 0, 1);
+    $pdf->Cell(0, 8, utf8_decode('Place : ') .$place , 0, 1);
+    $pdf->Cell(0, 8, 'Prix : ' . $prix,  ' DH', 0, 1);
+    $pdf->Cell(0, 8, 'Reference :  Mouhsine rouaki ', 0, 1);
 
     $pdf->Ln(10);
 
@@ -252,7 +252,7 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         mkdir($path, 0777, true);
     }
 
-    $fileName = $path . 'ticket_' . $reference . '.pdf';
+    $fileName = $path . 'ticket_' . $uniq . '.pdf';
     $pdf->Output('F', $fileName);
 
     return $fileName;
