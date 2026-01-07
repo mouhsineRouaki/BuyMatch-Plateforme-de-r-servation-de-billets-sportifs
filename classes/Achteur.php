@@ -5,10 +5,10 @@ require_once "Utilisateur.php";
 require_once "MatchSport.php";
 require_once "Statistique.php";
 require __DIR__ . '/../vendor/autoload.php';
+use FPDF\FPDF;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use FPDF;
 
 
 
