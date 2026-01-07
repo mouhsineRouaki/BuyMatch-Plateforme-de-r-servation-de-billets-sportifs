@@ -5,7 +5,6 @@ require_once "Utilisateur.php";
 require_once "MatchSport.php";
 require_once "Statistique.php";
 require __DIR__ . '/../vendor/autoload.php';
-use FPDF\FPDF;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -119,7 +118,7 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'houtm27@gmail.com';
-        $mail->Password = 'ytoq pktw ipwk esdy';
+        $mail->Password = 'ytoqpktwipwkesdy';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
@@ -128,7 +127,15 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
 
         $mail->isHTML(true);
         $mail->Subject = 'Votre billet BuyMatch';
-        $mail->body = "Bonjour ";
+        $mail->Body = "
+            <h2>Merci pour votre achat 🎉</h2>
+            <p><strong>Nombre de billets :</strong> </p>
+            <p><strong>Prix unitaire :</strong> {$prix} €</p>
+            <p><strong>Vos références :</strong></p>
+            <hr>
+            <p>Présentez ce mail à l’entrée du stade.</p>
+        ";
+
 
         $fillName = $this->generateTicketPDF($matchSport , $ticket);
         $mail->addAttachment($fillName);
@@ -136,6 +143,7 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         $mail->send();
 
     } catch (Exception $e) {
+        echo $e->getMessage();
     }
 }
 
