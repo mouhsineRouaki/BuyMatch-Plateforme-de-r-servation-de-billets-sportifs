@@ -143,7 +143,6 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         $mail->send();
 
     } catch (Exception $e) {
-        echo $e->getMessage();
     }
 }
 

@@ -1,9 +1,12 @@
 <?php
 class Billet {
+    private $id_billet;
     private string $QRCode;
     private float $dateAchat;
     private int $place;
     private float  $prix;
+
+    private $commentaire ; 
     private PDO $db;
 
     public function __construct(string $QRCode, float $prix, int $place , int $dateAchat) {
@@ -20,6 +23,9 @@ class Billet {
         $this->$name = $value;
     }
 
+    public function getCommentaire(){
+        
+    }
     public function save(): void {
         $stmt = $this->db->prepare("
             INSERT INTO category (nom, prix, nb_place, id_match)
