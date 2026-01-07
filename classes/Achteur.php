@@ -58,7 +58,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $matchs;
     }
 
-    public function AcheterBillet(int $id_match, float $prix, int $place): bool
+    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport,array $ticket): bool
     {
         try {
             $this->db->beginTransaction();
@@ -94,7 +94,9 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
             $this->db->commit();
 
-            $this->sendTicketMail($qr, $prix);
+            $pdf = $this->generateTicketPDF($matchSport , $ticket);
+
+            $this->sendTicketMail($qr, $prix,$matchSport , $ticket);
 
             return true;
 
@@ -103,7 +105,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             return false;
         }
     }
-private function sendTicketMail(string $qrCode, float $prix): void
+private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSport,array $ticket): void
 {
     try {
         $mail = new PHPMailer(true);
@@ -125,13 +127,7 @@ private function sendTicketMail(string $qrCode, float $prix): void
         $mail->isHTML(true);
         $mail->Subject = '🎫 Votre billet BuyMatch';
 
-        $mail->Body = "
-            <h2>Merci pour votre achat </h2>
-            <p><strong>Prix :</strong> {$prix} MAD</p>
-            <p><strong>QR Code :</strong> {$qrCode}</p>
-            <hr>
-            <p>Présentez ce mail à lentrée.</p>
-        ";
+        $mail->Body = $this->generateTicketPDF($matchSport , $ticket);
 
         $mail->send();
 
