@@ -198,18 +198,6 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
 
 
-    public function getMyBillet()
-    {
-        $stmt = $this->db->prepare("Select * from billet where id_acheteur = ?");
-        $stmt->execute([$this->id]);
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $billet = [];
-        foreach ($result as $r) {
-            $billet[] = new Billet(uniqid("billet_"), $r["prix"], $r["place"], $r["date_achat"]);
-        }
-        return $billet;
-
-    }
 
     public function addComment($contenu , $note , $id_match): bool
     {
@@ -356,6 +344,34 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
         return $fileName;
     }
+
+    private function sendEmail(string $to, string $subject, string $body): bool{
+
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'tonemail@gmail.com'; 
+        $mail->Password   = 'tonapppassword';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+
+        $mail->setFrom('tonemail@gmail.com', 'BuyMatch');
+
+        $mail->addAddress($to);
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+
+        return $mail->send();
+    } catch (Exception $e) {
+        error_log("Erreur envoi email reset : " . $mail->ErrorInfo);
+        return false;
+    }
+}
     public function logout(): void{
         session_destroy();
     }
