@@ -2,6 +2,7 @@
 session_start();
 require_once '../classes/Organisateur.php';
 require_once '../classes/Achteur.php';
+$role = $_SESSION["role"];
 $org = null;
 if($_SESSION["role"] === "ACHTEUR"){
     $org = Organisateur::getOrganisateurConnected();
@@ -23,33 +24,56 @@ if($_SESSION["role"] === "ACHTEUR"){
 <body class="bg-gradient-to-b from-black via-gray-900 to-gray-800 text-white">
 
 <!-- ================= NAVBAR ================= -->
-<nav class="fixed top-0 w-full z-50 backdrop-blur bg-black/60 border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2 text-2xl font-extrabold tracking-wide">
-            ⚽ <span>BuyMatch</span>
+<?php
+if($role === "ACHETEUR"){
+    echo '
+    <nav class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
+                <span class="text-3xl">🎫</span>
+                <span>BuyMatch</span>
+            </div>
+
+            <ul class="hidden md:flex gap-8 font-semibold text-slate-200">
+                <li><a href="achteur/dashboard.php" class="hover:text-emerald-400 transition">Dashboard</a></li>
+                <li><a href="achteur/matches.php" class="">Matchs</a></li>
+                <li><a href="achteur/mesBillets.php" class="hover:text-emerald-400 transition">Mes billets</a></li>
+                <li><a href="profil.php" class="hover:text-emerald-400 transition text-emerald-400 underline underline-offset-4">Profil</a></li>
+            </ul>
+
+            <button onclick="logout()"
+                    class="px-5 py-2.5 bg-rose-600 rounded-xl hover:bg-rose-700 transition font-semibold shadow-lg">
+                Déconnexion
+            </button>
         </div>
+    </nav>    
+    ';
+}else{
+    echo '
+    <nav class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
+                <span class="text-3xl">🎫</span>
+                <span>BuyMatch</span>
+            </div>
 
-        <ul class="hidden md:flex gap-10 font-semibold">
-            <li>
-                <a href="organisateur/dashbord.php"
-                   class="hover:text-green-400 transition border-b-2 border-transparent hover:border-green-400">
-                    Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="organisateur/creeDemandeMatch.php"
-                   class="hover:text-green-400 transition border-b-2 border-transparent hover:border-green-400">
-                    Créer un match
-                </a>
-            </li>
-        </ul>
+            <ul class="hidden md:flex gap-8 font-semibold text-slate-200">
+                <li><a href="dashboard.php" class="hover:text-emerald-400 transition">Dashboard</a></li>
+                <li><a href="matches.php" class="text-emerald-400 underline underline-offset-4">Matchs</a></li>
+                <li><a href="mesBillets.php" class="hover:text-emerald-400 transition">Mes billets</a></li>
+                <li><a href="../profil.php" class="hover:text-emerald-400 transition">Profil</a></li>
+            </ul>
 
-        <button onclick="logout()"
-                class="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition">
-            Déconnexion
-        </button>
-    </div>
-</nav>
+            <button onclick="logout()"
+                    class="px-5 py-2.5 bg-rose-600 rounded-xl hover:bg-rose-700 transition font-semibold shadow-lg">
+                Déconnexion
+            </button>
+        </div>
+    </nav>    
+    ';
+}
+
+?>
 
 <!-- ================= HERO ================= -->
 <section class="pt-32 pb-20 text-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-green-600/30 via-transparent to-transparent">

@@ -33,7 +33,7 @@ $today = date('Y-m-d');
 
         <ul class="hidden md:flex gap-8 font-semibold text-slate-200">
             <li><a href="dashboard.php" class="hover:text-emerald-400 transition">Dashboard</a></li>
-            <li><a href="matchs.php" class="hover:text-emerald-400">Matchs</a></li>
+            <li><a href="matches.php" class="hover:text-emerald-400">Matchs</a></li>
             <li><a href="mesBillets.php" class="hover:text-emerald-400  text-emerald-400 underline transition underline-offset-4">Mes billets</a></li>
             <li><a href="../profil.php" class="hover:text-emerald-400 transition">Profil</a></li>
         </ul>

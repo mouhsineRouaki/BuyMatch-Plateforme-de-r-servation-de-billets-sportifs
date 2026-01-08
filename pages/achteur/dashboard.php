@@ -2,6 +2,7 @@
 session_start();
 require_once "../../classes/Achteur.php";
 $acheteur = Achteur::getAcheteurConnected();
+$role = $_SESSION["role"] ; 
 ?>
 
 <!DOCTYPE html>
@@ -16,38 +17,22 @@ $acheteur = Achteur::getAcheteurConnected();
 <body class="bg-white text-gray-900">
 
 <!-- ================= NAVBAR ================= -->
-<nav class="sticky top-0 z-50 bg-gray-900 text-white shadow-lg">
+<nav class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2 text-2xl font-bold">
-            <span>🎫</span>
+        <div class="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
+            <span class="text-3xl">🎫</span>
             <span>BuyMatch</span>
         </div>
 
-        <ul class="hidden md:flex gap-8 font-semibold">
-            <li>
-                <a href="dashboard.php" class="text-green-500">
-                    Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="matches.php" class="hover:text-green-500 transition">
-                    Matchs
-                </a>
-            </li>
-            <li>
-                <a href="mesBillets.php" class="hover:text-green-500 transition">
-                    Mes billets
-                </a>
-            </li>
-            <li>
-                <a href="../profil.php" class="hover:text-green-500 transition">
-                    Profil
-                </a>
-            </li>
+        <ul class="hidden md:flex gap-8 font-semibold text-slate-200">
+            <li><a href="dashboard.php" class="hover:text-emerald-400 transition">Dashboard</a></li>
+            <li><a href="matches.php" class="text-emerald-400 underline underline-offset-4">Matchs</a></li>
+            <li><a href="mesBillets.php" class="hover:text-emerald-400 transition">Mes billets</a></li>
+            <li><a href="../profil.php" class="hover:text-emerald-400 transition">Profil</a></li>
         </ul>
 
         <button onclick="logout()"
-                class="px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition">
+                class="px-5 py-2.5 bg-rose-600 rounded-xl hover:bg-rose-700 transition font-semibold shadow-lg">
             Déconnexion
         </button>
     </div>
