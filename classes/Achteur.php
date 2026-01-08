@@ -35,6 +35,23 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $stmt->execute([$this->nom, $this->prenom, $this->email, $this->phone, password_hash($this->password, PASSWORD_DEFAULT), $this->id]);
 
     }
+    public function getMyBillets(): array
+{
+    $stmt = $this->db->prepare("
+        SELECT b.*
+        FROM billet b
+        WHERE b.id_acheteur = ?
+        ORDER BY b.date_achat DESC
+    ");
+    $stmt->execute([$this->id]);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $billets = [];
+    foreach ($result as $row) {
+        $billets[] = new Billet($row);
+    }
+    return $billets;
+}
 
 
     public function getAvailableMatchs(): array
