@@ -60,11 +60,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $matchs;
     }
 
-<<<<<<< HEAD
-    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport , $categorie): bool
-=======
     public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport,$category): bool
->>>>>>> bfeff27
     {
         try {
             $this->db->beginTransaction();
@@ -101,11 +97,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             $this->db->commit();
 
 
-<<<<<<< HEAD
-            $this->sendTicketMail($qr, $prix,$place,$matchSport,$categorie);
-=======
             $this->sendTicketMail($qr, $prix,$place ,$category,$matchSport );
->>>>>>> bfeff27
 
             return true;
 
@@ -114,11 +106,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             return false;
         }
     }
-<<<<<<< HEAD
-private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $matchSport ,  $categorie): void
-=======
 private function sendTicketMail(string $qrCode, float $prix ,$place ,$category ,MatchSport $matchSport): void
->>>>>>> bfeff27
 {
     try {
         $mail = new PHPMailer(true);
@@ -149,11 +137,7 @@ private function sendTicketMail(string $qrCode, float $prix ,$place ,$category ,
         ";
 
 
-<<<<<<< HEAD
-        $fillName = $this->generateTicketPDF($matchSport,$prix,$place,$categorie,$qrCode );
-=======
         $fillName = $this->generateTicketPDF($matchSport , $prix , $place , $qrCode , $category);
->>>>>>> bfeff27
         $mail->addAttachment($fillName);
 
         $mail->send();
