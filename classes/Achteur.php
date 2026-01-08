@@ -53,6 +53,16 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $billets;
     }
 
+    public function getBillet($id_match){
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) 
+            FROM billet 
+            WHERE id_acheteur = ? AND id_match = ?
+        ");
+        $stmt->execute([$this->id, $id_match]);
+        return $stmt->fetchColumn() > 0;
+    }
+
 
     public function getAvailableMatchs(): array
     {
@@ -336,9 +346,6 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
         return $fileName;
     }
-
-
-
     public function logout(): void
     {
         session_destroy();

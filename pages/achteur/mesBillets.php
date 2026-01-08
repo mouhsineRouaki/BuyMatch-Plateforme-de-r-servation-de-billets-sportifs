@@ -44,7 +44,6 @@ $today = date('Y-m-d');
         </button>
     </div>
 </nav>
-
 <!-- HERO -->
 <section class="bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900 text-white py-20">
     <div class="max-w-7xl mx-auto px-6 text-center">
@@ -52,6 +51,30 @@ $today = date('Y-m-d');
         <p class="text-xl text-emerald-300">Tous vos billets achetés et prêts à l'emploi</p>
     </div>
 </section>
+<?php
+if (isset($_GET['success']) && $_GET['success'] === 'comment_added'): ?>
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-emerald-100 border border-emerald-400 text-emerald-700 px-6 py-4 rounded-xl shadow">
+            <strong>Merci !</strong> Votre avis a été publié avec succès ⭐
+        </div>
+    </div>
+<?php elseif (isset($_GET['error'])): ?>
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-xl shadow">
+            <?php switch ($_GET['error']) {
+                case 'invalid_request': echo "Requête invalide."; break;
+                case 'invalid_match': echo "Match invalide."; break;
+                case 'invalid_rating': echo "La note doit être entre 1 et 5 étoiles."; break;
+                case 'comment_too_short': echo "Votre commentaire est trop court (minimum 10 caractères)."; break;
+                case 'no_ticket_for_match': echo "Vous n'avez pas acheté de billet pour ce match."; break;
+                case 'match_not_passed': echo "Vous ne pouvez commenter que les matchs passés."; break;
+                case 'already_commented': echo "Vous avez déjà laissé un avis pour ce match."; break;
+                case 'insert_failed': echo "Erreur lors de l'enregistrement de l'avis."; break;
+                default: echo "Une erreur est survenue. Veuillez réessayer.";
+            } ?>
+        </div>
+    </div>
+<?php endif; ?>
 
 <main class="py-16">
     <div class="max-w-7xl mx-auto px-6">
