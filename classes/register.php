@@ -1,5 +1,8 @@
 <?php
 require_once "Utilisateur.php";
+require_once '../../vendor/autoload.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class Register extends Utilisateur {
     
@@ -41,6 +44,48 @@ class Register extends Utilisateur {
             "id_user" => $idUser
         ];
     }
+public static function envoyerLienReset(string $email): bool
+{
+    $db = Database::getInstance()->getConnection();
+    $stmt = $db->prepare("SELECT id_user FROM utilisateur WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user) {
+        return false;
+    }
+
+    $token = bin2hex(random_bytes(50));
+    $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+    $stmt = $db->prepare("UPDATE utilisateur SET reset_token = ?, reset_expires = ? WHERE id_user = ?");
+    $stmt->execute([$token, $expires, $user['id_user']]);
+
+    $resetLink = "https://tondomaine.com/pages/reset_password.php?token=" . urlencode($token);
+    $subject = "BuyMatch - Réinitialisez votre mot de passe";
+    $message = "
+    <html>
+    <body style='font-family: Arial, sans-serif; background:#f4f4f4; padding:20px;'>
+        <div style='max-width:600px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1);'>
+            <h2 style='color:#10b981; text-align:center;'>🎫 BuyMatch</h2>
+            <h3 style='text-align:center;'>Réinitialisation de mot de passe</h3>
+            <p>Bonjour,</p>
+            <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe :</p>
+            <div style='text-align:center; margin:30px 0;'>
+                <a href='$resetLink' style='background:#10b981; color:white; padding:14px 28px; text-decoration:none; border-radius:8px; font-weight:bold; font-size:16px;'>Changer mon mot de passe</a>
+            </div>
+            <p><small>Ce lien expire dans 1 heure.</small></p>
+            <p>Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.</p>
+            <hr>
+            <p style='text-align:center; color:#888; font-size:12px;'>© 2026 BuyMatch - Tous droits réservés</p>
+        </div>
+    </body>
+    </html>
+    ";
+
+    return self::envoyerEmail($email, $subject, $message);
+}
+
+
     public function logout(): void{
         session_destroy();
     }
