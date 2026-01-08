@@ -1,3 +1,22 @@
+<?php
+session_start();
+require_once "../config/Database.php";
+require_once "../classes/MatchSport.php";
+require_once "../classes/Equipe.php";
+require_once "../classes/Statistique.php";
+require_once "../classes/Category.php";
+require_once "../classes/Commentaire.php";
+
+$acheteur = null;
+if (isset($_SESSION['user_id'])) {
+    require_once "../../classes/Achteur.php";
+    $acheteur = Achteur::getAcheteurConnected();
+}
+
+$matchs = MatchSport::getAvailableMatchs(); // Utilisation de la méthode statique
+?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -53,7 +72,86 @@
         <div class="max-w-7xl mx-auto px-4">
             <h2 class="text-4xl font-bold mb-12 text-center">Matchs à venir</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="matchesGrid">
-                <!-- Les matchs statiques seront chargés ici -->
+                <?php if (empty($matchs)): ?>
+                    <p class="col-span-full text-center text-gray-600 text-xl py-10">Aucun match disponible pour le moment</p>
+                <?php else: ?>
+                    <?php foreach ($matchs as $match): ?>
+                    <article 
+                        class="match-card group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-emerald-500/20 transition-all duration-500 border border-gray-100"
+                        data-team1="<?= strtolower(htmlspecialchars($match->equipe1->nom)) ?>"
+                        data-team2="<?= strtolower(htmlspecialchars($match->equipe2->nom)) ?>"
+                    >
+                        <!-- Header avec équipes -->
+                        <div class="bg-gradient-to-r from-slate-900 to-emerald-900 text-white p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="text-center flex-1">
+                                    <img src="<?= htmlspecialchars($match->equipe1->logo ?? 'https://via.placeholder.com/80') ?>"
+                                         alt="<?= htmlspecialchars($match->equipe1->nom) ?>"
+                                         class="w-20 h-20 mx-auto rounded-full object-contain bg-white/10 p-2 shadow-lg">
+                                    <p class="mt-3 font-extrabold text-lg"><?= htmlspecialchars($match->equipe1->nom) ?></p>
+                                </div>
+                                <div class="text-3xl font-black text-emerald-400 px-4">VS</div>
+                                <div class="text-center flex-1">
+                                    <img src="<?= htmlspecialchars($match->equipe2->logo ?? 'https://via.placeholder.com/80') ?>"
+                                         alt="<?= htmlspecialchars($match->equipe2->nom) ?>"
+                                         class="w-20 h-20 mx-auto rounded-full object-contain bg-white/10 p-2 shadow-lg">
+                                    <p class="mt-3 font-extrabold text-lg"><?= htmlspecialchars($match->equipe2->nom) ?></p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-3 text-center text-sm">
+                                <div class="bg-white/10 rounded-lg py-2">
+                                    <p class="text-emerald-300">Date</p>
+                                    <p class="font-bold"><?= date('d/m/Y', strtotime($match->date_match)) ?></p>
+                                </div>
+                                <div class="bg-white/10 rounded-lg py-2">
+                                    <p class="text-emerald-300">Heure</p>
+                                    <p class="font-bold"><?= substr($match->heure, 0, 5) ?></p>
+                                </div>
+                                <div class="bg-white/10 rounded-lg py-2">
+                                    <p class="text-emerald-300">Stade</p>
+                                    <p class="font-bold text-xs"><?= htmlspecialchars($match->stade) ?></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Catégories de billets -->
+                        <div class="p-6 space-y-4">
+                            <h3 class="font-bold text-lg text-gray-800">Catégories disponibles</h3>
+                            <?php if (empty($match->categories)): ?>
+                                <p class="text-gray-500 text-center py-4">Catégories bientôt disponibles</p>
+                            <?php else: ?>
+                                <div class="space-y-3">
+                                    <?php foreach ($match->categories as $cat): ?>
+                                        <div class="flex justify-between items-center bg-gray-50 rounded-xl px-4 py-3">
+                                            <div>
+                                                <p class="font-semibold"><?= htmlspecialchars($cat->nom) ?></p>
+                                                <p class="text-sm text-gray-600"><?= $cat->nb_place ?> places</p>
+                                            </div>
+                                            <p class="text-xl font-bold text-emerald-600"><?= number_format($cat->prix, 0) ?> MAD</p>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Bouton Réserver -->
+                            <div class="flex gap-3 mt-6">
+                                <?php if ($acheteur): ?>
+                                    <a href="acheterBillet.php?id=<?= $match->id_match ?>"
+                                       class="flex-1 text-center py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg">
+                                        Réserver
+                                    </a>
+                                <?php else: ?>
+                                    <button onclick="showLoginModal()" 
+                                            class="flex-1 text-center py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg">
+                                        Réserver
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </article>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -391,110 +489,75 @@
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        function showLoginModal() {
-            document.getElementById("loginModal").classList.remove("hidden")
-        }
-
-        function closeLoginModal() {
-            document.getElementById("loginModal").classList.add("hidden")
-        }
-
-        function showRegisterModal() {
-            document.getElementById("registerModal").classList.remove("hidden")
-        }
-
-        function closeRegisterModal() {
-            document.getElementById("registerModal").classList.add("hidden")
-        }
-
-        function switchToRegister() {
-            closeLoginModal()
-            showRegisterModal()
-        }
-
-        function switchToLogin() {
-            closeRegisterModal()
-            showLoginModal()
-        }
+        // Fonctions modals (inchangées)
+        function showLoginModal() { document.getElementById("loginModal").classList.remove("hidden") }
+        function closeLoginModal() { document.getElementById("loginModal").classList.add("hidden") }
+        function showRegisterModal() { document.getElementById("registerModal").classList.remove("hidden") }
+        function closeRegisterModal() { document.getElementById("registerModal").classList.add("hidden") }
+        function switchToRegister() { closeLoginModal(); showRegisterModal(); }
+        function switchToLogin() { closeRegisterModal(); showLoginModal(); }
 
         window.onclick = (event) => {
             const loginModal = document.getElementById("loginModal")
             const registerModal = document.getElementById("registerModal")
+            if (event.target === loginModal) loginModal.classList.add("hidden")
+            if (event.target === registerModal) registerModal.classList.add("hidden")
+        }
 
-            if (event.target === loginModal) {
-                loginModal.classList.add("hidden")
-            }
-            if (event.target === registerModal) {
-                registerModal.classList.add("hidden")
+        // === RECHERCHE PAR NOM D'ÉQUIPE (en temps réel) ===
+        const searchInput = document.getElementById('searchInput');
+        const matchCards = document.querySelectorAll('.match-card');
+        const matchesGrid = document.getElementById('matchesGrid');
+
+        // Fonction de normalisation (supprime accents et passe en minuscule)
+        function normalize(str) {
+            return str
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+        // Filtrage
+        function filterMatches() {
+            const query = normalize(searchInput.value.trim());
+
+            let visibleCount = 0;
+
+            matchCards.forEach(card => {
+                const team1 = normalize(card.dataset.team1);
+                const team2 = normalize(card.dataset.team2);
+
+                const matchesQuery = !query || team1.includes(query) || team2.includes(query);
+
+                card.classList.toggle('hidden', !matchesQuery);
+
+                if (matchesQuery) visibleCount++;
+            });
+
+            // Message si aucun résultat
+            if (visibleCount === 0 && query) {
+                if (!document.getElementById('noResultsMsg')) {
+                    const msg = document.createElement('p');
+                    msg.id = 'noResultsMsg';
+                    msg.className = 'col-span-full text-center text-gray-600 text-xl py-10';
+                    msg.textContent = 'Aucun match trouvé pour votre recherche.';
+                    matchesGrid.appendChild(msg);
+                }
+            } else {
+                const msg = document.getElementById('noResultsMsg');
+                if (msg) msg.remove();
             }
         }
 
-        // Custom match card rendering for Tailwind
-        function createMatchCardTailwind(match) {
-            const matchDate = new Date(match.date)
-            const formattedDate = matchDate.toLocaleDateString("fr-FR", {
-                weekday: "short",
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-            })
+        // Écoute les frappes dans la barre de recherche
+        searchInput.addEventListener('input', filterMatches);
 
-            const categoriesHtml = match.categories
-                .map(
-                    (cat) => `
-                        <div class="flex justify-between text-sm py-1 px-2 bg-gray-50 rounded">
-                            <span>${cat.nom}</span>
-                            <span class="font-bold text-green-600">${cat.prix}€</span>
-                        </div>
-                    `,
-                )
-                .join("")
+        // Optionnel : bouton de recherche (clic)
+        document.querySelector('#search-section button').addEventListener('click', filterMatches);
 
-            const card = document.createElement("div")
-            card.className = "border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition"
-            card.innerHTML = `
-                <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 flex justify-between">
-                    <div class="font-semibold">${formattedDate}</div>
-                    <div class="font-bold">${match.time}</div>
-                </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="text-center flex-1">
-                            <div class="text-3xl mb-2">⚽</div>
-                            <div class="font-semibold text-sm">${match.team1}</div>
-                        </div>
-                        <div class="px-3 font-bold text-gray-400">VS</div>
-                        <div class="text-center flex-1">
-                            <div class="text-3xl mb-2">⚽</div>
-                            <div class="font-semibold text-sm">${match.team2}</div>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-4">
-                        ${categoriesHtml}
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="flex-1 px-4 py-2 border border-green-600 text-green-600 rounded hover:bg-green-50 transition" onclick="goToDetails(${match.id})">Détails</button>
-                        <button class="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Réserver</button>
-                    </div>
-                </div>
-            `
-            return card
-        }
-
-        const originalDisplayMatches = window.displayMatches
-        window.displayMatches = function(matches) {
-            const grid = document.getElementById("matchesGrid")
-            grid.innerHTML = ""
-
-            if (matches.length === 0) {
-                grid.innerHTML = '<p class="col-span-full text-center text-gray-600">Aucun match disponible</p>'
-                return
-            }
-
-            matches.forEach((match) => {
-                const card = createMatchCardTailwind(match)
-                grid.appendChild(card)
-            })
+        // Scroll smooth
+        function scrollToSection(section) {
+            document.querySelector(section).scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>

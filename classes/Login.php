@@ -23,6 +23,9 @@ class Login {
         if (!$user) {
             return ["success" => false, "message" => "Email incorrect"];
         }
+        if(!password_verify($this->password , $user["password"])){
+             return ["success" => false, "message" => "mot de pass  incorrect"];
+        }
 
        
 
