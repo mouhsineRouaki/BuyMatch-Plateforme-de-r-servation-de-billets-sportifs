@@ -60,7 +60,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $matchs;
     }
 
-    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport,array $ticket): bool
+    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport,$category): bool
     {
         try {
             $this->db->beginTransaction();
@@ -97,7 +97,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             $this->db->commit();
 
 
-            $this->sendTicketMail($qr, $prix,$matchSport , $ticket);
+            $this->sendTicketMail($qr, $prix,$place ,$category,$matchSport );
 
             return true;
 
@@ -106,7 +106,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             return false;
         }
     }
-private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSport,array $ticket): void
+private function sendTicketMail(string $qrCode, float $prix ,$place ,$category ,MatchSport $matchSport): void
 {
     try {
         $mail = new PHPMailer(true);
@@ -137,7 +137,7 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         ";
 
 
-        $fillName = $this->generateTicketPDF($matchSport , $ticket);
+        $fillName = $this->generateTicketPDF($matchSport , $prix , $place , $qrCode , $category);
         $mail->addAttachment($fillName);
 
         $mail->send();
@@ -175,55 +175,142 @@ private function sendTicketMail(string $qrCode, float $prix ,MatchSport $matchSp
         ]);
         $commentaire->insererComentaire;
     }
-    public function generateTicketPDF(MatchSport $match, array $ticket)
-    {
-    $pdf = new FPDF();
+    public function generateTicketPDF(MatchSport $match, $prix, $place, $QRCode, $category): string
+{
+    $pdf = new TCPDF('L', 'mm', [210, 130], true, 'UTF-8', false);
+    $pdf->SetMargins(0, 0, 0);
+    $pdf->SetAutoPageBreak(false);
     $pdf->AddPage();
 
-    $pdf->SetFont('Arial', 'B', 16);
-    $pdf->Cell(0, 10, 'BILLET OFFICIEL', 0, 1, 'C');
-    $pdf->Ln(5);
+    // === COULEURS ===
+    $emerald = [16, 185, 129];
+    $cyan    = [34, 211, 238];
+    $dark    = [15, 23, 42];
+    $light   = [241, 245, 249];
+    $gray    = [100, 116, 139];
 
-    $pdf->SetFont('Arial', 'B', 14);
-    $pdf->Cell(
-        0,
-        10,
-        $match->equipe1->nom . ' VS ' . $match->equipe2->nom,
-        0,
-        1,
-        'C'
-    );
+    // === HEADER FOND + GRADIENT ===
+    $pdf->SetFillColor(...$dark);
+    $pdf->Rect(0, 0, 210, 60, 'F');
 
-    $pdf->Ln(5);
-
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(0, 8, 'Date : ' . $match->date_match, 0, 1);
-    $pdf->Cell(0, 8, 'Heure : ' . $match->heure, 0, 1);
-    $pdf->Cell(0, 8, 'Stade : ' . $match->__get('stade'), 0, 1);
-    $pdf->Ln(5);
-
-    $pdf->SetFont('Arial', 'B', 13);
-    $pdf->Cell(0, 10, 'Informations du billet', 0, 1);
-
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->Cell(0, 8, 'Nom : ' . $ticket['nom_client'], 0, 1);
-    $pdf->Cell(0, 8, 'Categorie : ' . $ticket['categorie'], 0, 1);
-    $pdf->Cell(0, 8, 'Place : ' . $ticket['place'], 0, 1);
-    $pdf->Cell(0, 8, 'Prix : ' . number_format($ticket['prix'], 2) . ' DT', 0, 1);
-    $pdf->Cell(0, 8, 'Reference : ' . $ticket['reference'], 0, 1);
-
-    $pdf->Ln(10);
-
-    $pdf->SetFont('Arial', 'I', 10);
-    $pdf->Cell(0, 10, 'Veuillez presenter ce billet a l\'entree.', 0, 1, 'C');
-
-    $path = __DIR__ . '/../tickets/';
-    if (!is_dir($path)) {
-        mkdir($path, 0777, true);
+    // Gradient emerald → cyan (plus doux)
+    for ($i = 0; $i < 60; $i += 0.5) {
+        $ratio = $i / 60;
+        $r = $emerald[0] * (1 - $ratio) + $cyan[0] * $ratio;
+        $g = $emerald[1] * (1 - $ratio) + $cyan[1] * $ratio;
+        $b = $emerald[2] * (1 - $ratio) + $cyan[2] * $ratio;
+        $pdf->SetDrawColor($r, $g, $b);
+        $pdf->SetLineWidth(0.5);
+        $pdf->Line(0, $i, 210, $i);
     }
 
-    $fileName = $path . 'ticket_' . $ticket['reference'] . '.pdf';
-    $pdf->Output('F', $fileName);
+    // Titre BuyMatch + icône
+    $pdf->SetFont('helvetica', 'B', 18);
+    $pdf->SetTextColor(...$light);
+    $pdf->SetXY(0, 8);
+    $pdf->Cell(210, 10, '🎟 BUYMATCH - BILLET OFFICIEL', 0, 1, 'C');
+
+    // === LOGOS + ÉQUIPES + VS ===
+    $logoSize = 35;
+
+    // Fonction helper pour ajouter image depuis chemin ou URL
+    $addLogo = function($logoUrl, $x) use ($pdf, $logoSize) {
+        if (!empty($logoUrl)) {
+            if (filter_var($logoUrl, FILTER_VALIDATE_URL)) {
+                // URL distante → télécharger temporairement
+                $tmp = tempnam(sys_get_temp_dir(), 'logo_');
+                $imgData = file_get_contents($logoUrl);
+                if ($imgData !== false) {
+                    file_put_contents($tmp, $imgData);
+                    $pdf->Image('@' . $imgData, 0, 18, $logoSize, $logoSize, '', '', '', true, 300, '', false, false, 0);
+                }
+            } elseif (file_exists($logoUrl)) {
+                // Chemin local
+                $pdf->Image($logoUrl, 0, 18, $logoSize, $logoSize, '', '', '', false, 300);
+            }
+        }
+    };
+
+    // Logo équipe 1
+    $addLogo($match->equipe1->logo, 20);
+
+    $pdf->SetFont('helvetica', 'B', 15);
+    $pdf->SetTextColor(...$light);
+    $pdf->SetXY(5, 25);
+    $pdf->Cell(30, 10, $match->equipe1->nom, 0, 0, 'C');
+
+    // VS
+    $pdf->SetTextColor(...$emerald);
+    $pdf->SetXY(90, 25);
+    $pdf->Cell(30, 10, 'VS', 0, 0, 'C');
+
+    // Logo équipe 2
+    $addLogo($match->equipe2->logo, 150);
+
+    $pdf->SetTextColor(...$light);
+    $pdf->SetXY(110, 25);
+    $pdf->Cell(30, 10, $match->equipe2->nom, 0, 0, 'C');
+
+    // Détails match
+    $pdf->SetFont('helvetica', '', 13);
+    $pdf->SetTextColor(...$light);
+    $pdf->SetXY(10, 48);
+    $pdf->Cell(190, 10, '📅 ' . $match->date_match . '   |   🕐 ' . $match->heure . '   |   🏟 ' . $match->stade, 0, 1, 'C');
+
+    // === SECTION INFOS BILLET (fond clair) ===
+    $pdf->SetFillColor(...$light);
+    $pdf->SetTextColor(...$dark);
+    $pdf->Rect(0, 60, 210, 50, 'F');
+
+    $pdf->SetFont('helvetica', 'B', 15);
+    $pdf->SetXY(0, 65);
+    $pdf->Cell(210, 8, 'DÉTAILS DU BILLET', 0, 1, 'C');
+
+    $pdf->SetFont('helvetica', '', 13);
+    $startY = 75;
+    $lineH = 8;
+
+    $pdf->SetXY(20, $startY);
+    $pdf->Cell(60, $lineH, 'Nom client :');
+    $pdf->Cell(100, $lineH, $this->nom . ' ' . $this->prenom, 0, 1);
+
+    $pdf->SetX(20);
+    $pdf->Cell(60, $lineH, 'Catégorie :');
+    $pdf->Cell(100, $lineH, $category, 0, 1);
+
+    $pdf->SetX(20);
+    $pdf->Cell(60, $lineH, 'Place :');
+    $pdf->SetTextColor(...$emerald);
+    $pdf->SetFont('', 'B');
+    $pdf->Cell(100, $lineH, $place, 0, 1);
+
+    $pdf->SetTextColor(...$dark);
+    $pdf->SetX(20);
+    $pdf->Cell(60, $lineH, 'Prix :');
+    $pdf->SetTextColor(...$emerald);
+    $pdf->SetFont('', 'B', 16);
+    $pdf->Cell(100, $lineH, number_format($prix, 2) . ' MAD', 0, 1);
+
+    // Référence + Instruction
+    $pdf->SetTextColor(...$gray);
+    $pdf->SetFont('', '', 11);
+    $pdf->SetXY(0, 102);
+    $pdf->Cell(210, 6, 'Référence : ' . $QRCode, 0, 1, 'C');
+
+    $pdf->SetXY(0, 106);
+    $pdf->Cell(210, 6, 'Présentez ce billet et une pièce d\'identité à l\'entrée du stade.', 0, 1, 'C');
+
+    // QR Code (plus grand et centré en bas à droite)
+    $pdf->write2DBarcode($QRCode, 'QRCODE,H', 150, 70, 40, 40);
+
+  
+
+    // === SAUVEGARDE ===
+    $path = __DIR__ . '/../tickets/';
+    if (!is_dir($path)) mkdir($path, 0777, true);
+
+    $fileName = $path . 'ticket_' . $QRCode . '.pdf';
+    $pdf->Output($fileName, 'F');
 
     return $fileName;
 }

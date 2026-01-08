@@ -7,13 +7,8 @@ $ach = Achteur::getAcheteurConnected();
 $id_match = $_POST["id_match"];
 $prix = $_POST["prix"];
 $place = $_POST["place"];
-$ticket = [
-    'reference' => 'BIL-2026-001',
-    'nom_client' => 'Ahmed Ben Ali',
-    'categorie' => 'VIP',
-    'prix' => 120,
-    'place' => 'Bloc A - Place 15'
-];
+$category = $_POST["nom_category"];
+
 
 $match = MatchSport::getMatchById($id_match);
-$ach->AcheterBillet($id_match , $prix , $place , $match  ,$ticket);
+$ach->AcheterBillet($id_match , $prix , $place , $match  ,$category);
