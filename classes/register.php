@@ -85,7 +85,59 @@ public static function envoyerLienReset(string $email): bool
     return self::envoyerEmail($email, $subject, $message);
 }
 
+public static function reinitialiserMotDePasse(string $token, string $nouveauMotDePasse): bool
+{
+    $db = Database::getInstance()->getConnection();
 
+    $stmt = $db->prepare("
+        SELECT id_user FROM utilisateur 
+        WHERE reset_token = ? AND reset_expires > NOW()
+    ");
+    $stmt->execute([$token]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user) {
+        return false;
+    }
+    $hashed = password_hash($nouveauMotDePasse, PASSWORD_DEFAULT);
+
+    $stmt = $db->prepare("
+        UPDATE utilisateur 
+        SET password = ?, reset_token = NULL, reset_expires = NULL 
+        WHERE id_user = ?
+    ");
+    return $stmt->execute([$hashed, $user['id_user']]);
+}
+
+private static function envoyerEmail(string $to, string $subject, string $body): bool
+{
+
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'ton.email@gmail.com';           // ← À CHANGER
+        $mail->Password   = 'ton-mot-de-passe-app';          // ← Mot de passe d'application Gmail
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        $mail->CharSet    = 'UTF-8';
+
+        $mail->setFrom('ton.email@gmail.com', 'BuyMatch');
+        $mail->addAddress($to);
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Erreur envoi email : " . $mail->ErrorInfo);
+        return false;
+    }
+}
     public function logout(): void{
         session_destroy();
     }
