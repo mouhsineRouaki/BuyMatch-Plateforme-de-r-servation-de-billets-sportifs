@@ -135,20 +135,6 @@ if($role === "ACHETEUR"){
 
 <div class="border-t border-white/10 my-8"></div>
 
-<div>
-    <label class="block text-sm font-semibold text-gray-300 mb-2">
-        Nouveau mot de passe (optionnel)
-    </label>
-    <form action="../php/resetPassword.php">
-        <input type="hidden" id="email" name="email" value="<?= $org->email ?>">
-
-    <button type="submit"
-            class="flex-1 py-4 bg-green-600 rounded-xl font-bold hover:bg-green-700 transition">
-        Reset Password
-    </button>
-
-    </form>
-</div>
 
 <!-- ================= ACTIONS ================= -->
 <div class="flex flex-col md:flex-row gap-6 pt-6">
@@ -163,6 +149,20 @@ if($role === "ACHETEUR"){
 </div>
 
 </form>
+<div>
+    <label class="block text-sm font-semibold text-gray-300 mb-2">
+        Nouveau mot de passe (optionnel)
+    </label>
+    <form action="../php/resetPassword.php" method="post">
+        <input type="hidden" id="email" name="email" value="<?= $org->email ?>">
+
+    <button type="submit"
+            class="flex-1 py-4 bg-green-600 rounded-xl font-bold hover:bg-green-700 transition">
+        Reset Password
+    </button>
+
+    </form>
+</div>
 
 <div id="message"
      class="mt-6 hidden px-4 py-3 rounded-xl text-center font-semibold">

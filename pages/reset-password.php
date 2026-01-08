@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "../classes/Achteur.php";
+require_once "../classes/register.php";
 
 $token = $_GET['token'] ?? '';
 $error = '';
@@ -16,8 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (strlen($newPassword) < 8) {
         $error = "Le mot de passe doit faire au moins 8 caractères.";
     } else {
-        $acheteur = new Login('' , '');
-        if ($acheteur->resetMotDePasse($token, $newPassword)) {
+        if (Register::reinitialiserMotDePasse($token, $newPassword)) {
             $success = "Votre mot de passe a été réinitialisé avec succès !";
         } else {
             $error = "Lien invalide ou expiré.";
@@ -38,9 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1 class="text-3xl font-bold text-center mb-6">Réinitialiser votre mot de passe</h1>
 
         <?php if ($success): ?>
+            <?php session_destroy(); ?>
             <div class="bg-green-100 text-green-700 p-4 rounded-xl mb-6 text-center">
                 <?= htmlspecialchars($success) ?>
-                <p class="mt-4"><a href="login.php" class="text-green-600 font-bold">Se connecter</a></p>
+                <p class="mt-4"><a href="../public/index.php" class="text-green-600 font-bold">Se connecter</a></p>
             </div>
         <?php else: ?>
             <?php if ($error): ?>

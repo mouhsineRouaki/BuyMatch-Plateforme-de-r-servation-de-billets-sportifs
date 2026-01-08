@@ -1,6 +1,7 @@
 <?php
 require_once "Utilisateur.php";
-require_once '../../vendor/autoload.php';
+require_once "../config/Database.php";
+require_once '../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -60,7 +61,7 @@ public static function envoyerLienReset(string $email): bool
     $stmt = $db->prepare("UPDATE utilisateur SET reset_token = ?, reset_expires = ? WHERE id_user = ?");
     $stmt->execute([$token, $expires, $user['id_user']]);
 
-    $resetLink = "http://localhost/buyMatch/pages/reset_password.php?token=" . urlencode($token);
+    $resetLink = "http://localhost/buyMatch/pages/reset-password.php?token=" . urlencode($token);
     $subject = "BuyMatch - Réinitialisez votre mot de passe";
     $message = "
     <html>
