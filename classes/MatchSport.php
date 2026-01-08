@@ -94,7 +94,7 @@ class MatchSport {
     public function getCategoryById($id):?Category{
         for( $i = 0 ; $i <= count($this->categories) ; $i++){
             $cat = $this->categories[$i];
-            if($cat->id_category === $id){
+            if($cat->id_category == $id){
                 return $cat;
             }
         }

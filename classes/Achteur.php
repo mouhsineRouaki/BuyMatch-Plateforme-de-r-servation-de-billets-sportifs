@@ -60,7 +60,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $matchs;
     }
 
-    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport , Category $categorie): bool
+    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport , $categorie): bool
     {
         try {
             $this->db->beginTransaction();
@@ -106,7 +106,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             return false;
         }
     }
-private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $matchSport , Category $categorie): void
+private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $matchSport ,  $categorie): void
 {
     try {
         $mail = new PHPMailer(true);
@@ -174,13 +174,12 @@ private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $
         ]);
         $commentaire->insererComentaire;
     }
-    public function generateTicketPDF(MatchSport $match, $prix , $place , Category $categorie, string $qrCode)
+    public function generateTicketPDF(MatchSport $match, $prix , $place , $categorie, string $qrCode)
 {
-    $pdf = new FPDF('P', 'mm', array(200, 100)); // Format ticket-like : ~200mm x 100mm
+    $pdf = new FPDF('P', 'mm', array(200, 100));
     $pdf->AddPage();
 
-    // Couleurs (ex: vert terrain + accents rouges/noirs)
-    $pdf->SetFillColor(34, 139, 34); // Vert foot (field green)
+    $pdf->SetFillColor(34, 139, 34); 
     $pdf->SetDrawColor(0, 0, 0);
     $pdf->SetTextColor(255, 255, 255);
 
@@ -191,7 +190,6 @@ private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $
 
     $pdf->Ln(5);
 
-    // Logos des équipes (si disponibles via $match->equipe1->logo et equipe2->logo)
     if (file_exists($match->equipe1->logo ?? '')) {
         $pdf->Image($match->equipe1->logo, 20, 35, 30, 30);
     }
@@ -206,7 +204,6 @@ private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $
 
     $pdf->Ln(5);
 
-    // Infos match
     $pdf->SetFont('Arial', 'B', 12);
     $pdf->SetTextColor(34, 139, 34);
     $pdf->Cell(0, 8, utf8_decode('Date : ') . $match->date_match, 0, 1, 'C');
@@ -215,7 +212,6 @@ private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $
 
     $pdf->Ln(10);
 
-    // Section infos billet
     $pdf->SetFillColor(240, 240, 240);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetFont('Arial', 'B', 14);
@@ -223,36 +219,33 @@ private function sendTicketMail(string $qrCode, float $prix ,$place,MatchSport $
 
     $pdf->SetFont('Arial', '', 12);
     $pdf->Cell(0, 8, utf8_decode('Nom du spectateur : ') . $this->nom ." ".$this->prenom, 0, 1);
-    $pdf->Cell(0, 8, utf8_decode('Catégorie : ') . $categorie->nom, 0, 1);
+    $pdf->Cell(0, 8, utf8_decode('Catégorie : ') . $categorie, 0, 1);
     $pdf->Cell(0, 8, utf8_decode('Place : ') .$place , 0, 1);
     $pdf->Cell(0, 8, 'Prix : ' . $prix,  ' DH', 0, 1);
     $pdf->Cell(0, 8, 'Reference :  Mouhsine rouaki ', 0, 1);
 
     $pdf->Ln(10);
 
-    // QR Code (généré précédemment ou à générer ici)
     $pdf->Image($qrCode, 80, $pdf->GetY(), 40, 40, 'PNG');
 
     $pdf->Ln(50);
 
-    // Footer
     $pdf->SetFont('Arial', 'I', 10);
     $pdf->SetTextColor(100, 100, 100);
     $pdf->Cell(0, 10, utf8_decode('Veuillez présenter ce billet à l\'entrée du stade.'), 0, 1, 'C');
 
-    // Bordure ticket + ligne perforée simulée (stub)
     $pdf->SetDrawColor(0, 0, 0);
     $pdf->Rect(5, 5, 190, 90, 'D');
     $pdf->SetDash(4, 2);
-    $pdf->Line(100, 5, 100, 95); // Ligne "perforée" verticale pour séparer stub
+    $pdf->Line(100, 5, 100, 95); 
 
-    // Enregistrement
+
     $path = __DIR__ . '/../tickets/';
     if (!is_dir($path)) {
         mkdir($path, 0777, true);
     }
 
-    $fileName = $path . 'ticket_' . $uniq . '.pdf';
+    $fileName = $path . 'ticket_' .uniqid() . '.pdf';
     $pdf->Output('F', $fileName);
 
     return $fileName;

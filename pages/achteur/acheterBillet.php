@@ -98,7 +98,7 @@ if (!$match) {
             <!-- ===== FORM ===== -->
             <form method="POST" class="bg-white rounded-2xl shadow-xl p-8 space-y-6" action="../../php/achteur/acheterBilletProcess.php">
                 <input type="hidden" name="id_match" value="<?= $matchId ?>">
-                <input type="hidden" id="idC" name="id_category" value="<?= $match->categories[0]->id_category ?>">
+                <input type="hidden" id="idC" name="nom_category" value="<?= $match->categories[0]->nom ?>">
 
                 <div>
                     <label class="block font-semibold mb-2">🎟 Catégorie</label>
