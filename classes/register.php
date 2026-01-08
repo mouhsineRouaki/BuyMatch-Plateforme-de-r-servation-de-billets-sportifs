@@ -2,6 +2,11 @@
 require_once "Utilisateur.php";
 
 class Register extends Utilisateur {
+    
+    public function __construct(?int $id, string $nom, string $prenom, string $email, string $password, ?string $phone , $role)
+    {
+        parent::__construct($id, $nom, $prenom, $email, $password, $phone, $role);
+    }
 
     public function inscrire() {
         $check = $this->db->prepare("SELECT id_user FROM utilisateur WHERE email = ?");

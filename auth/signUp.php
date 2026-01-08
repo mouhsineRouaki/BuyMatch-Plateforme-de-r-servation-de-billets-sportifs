@@ -3,6 +3,7 @@ require_once "../classes/register.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $register = new Register(
+        null,
         $_POST['nom'],
         $_POST['prenom'],
         $_POST['email'],

@@ -139,10 +139,10 @@ if($role === "ACHETEUR"){
     <label class="block text-sm font-semibold text-gray-300 mb-2">
         Nouveau mot de passe (optionnel)
     </label>
-    <input type="password" id="newPassword" name="password"
-           class="w-full p-4 rounded-xl bg-white text-gray-900 focus:ring-4 focus:ring-green-500"
-           placeholder="Laissez vide si vous ne souhaitez pas le modifier">
-    <p class="text-xs text-gray-400 mt-2">Minimum 8 caractères</p>
+    <button type="submit"
+            class="flex-1 py-4 bg-green-600 rounded-xl font-bold hover:bg-green-700 transition">
+        Reset Password
+    </button>
 </div>
 
 <!-- ================= ACTIONS ================= -->

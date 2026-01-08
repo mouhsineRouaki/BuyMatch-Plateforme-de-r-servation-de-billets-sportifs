@@ -15,7 +15,7 @@ abstract class Utilisateur {
     protected PDO $db;
 
     public function __construct(
-        int $id,
+        ?int $id,
         string $nom,
         string $prenom,
         string $email,
