@@ -62,6 +62,15 @@ class Achteur extends Utilisateur implements IModifiableProfil
         $stmt->execute([$this->id, $id_match]);
         return $stmt->fetchColumn() > 0;
     }
+    public function dejaCommenter($id_match){
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) 
+            FROM commentaire 
+            WHERE id_acheteur = ? AND id_match = ?
+        ");
+        $stmt->execute([$this->id, $id_match]);
+        return $stmt->fetchColumn() > 0;
+    }
 
 
     public function getAvailableMatchs(): array
@@ -202,16 +211,18 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
     }
 
-    public function addComment(Commentaire $commentaire): bool
+    public function addComment($contenu , $note , $id_match): bool
     {
         $sql = "INSERT INTO commentaire
-                (utilisateur_id, match_id, contenu, note)
-                VALUES (?, ?, ?, ?)";
+                (id_acheteur, id_match, contenu, note ,date_commentaire)
+                VALUES (?, ?, ?, ?,NOW())";
 
         return $this->db->prepare($sql)->execute([
             $this->id,
+            $id_match , 
+            $contenu,
+            $note
         ]);
-        $commentaire->insererComentaire;
     }
     public function generateTicketPDF(MatchSport $match, $prix, $place, $QRCode, $category): string
     {
@@ -336,7 +347,6 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
 
 
-        // === SAUVEGARDE ===
         $path = __DIR__ . '/../tickets/';
         if (!is_dir($path))
             mkdir($path, 0777, true);
@@ -346,8 +356,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
         return $fileName;
     }
-    public function logout(): void
-    {
+    public function logout(): void{
         session_destroy();
     }
 }

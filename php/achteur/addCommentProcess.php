@@ -44,13 +44,7 @@ if ($matchDateTime > $now) {
     exit;
 }
 
-$stmt = $acheteur->db->prepare("
-    SELECT COUNT(*) 
-    FROM commentaire 
-    WHERE id_acheteur = ? AND id_match = ?
-");
-$stmt->execute([$acheteur->id, $id_match]);
-$alreadyCommented = (int)$stmt->fetchColumn() > 0;
+$alreadyCommented = $acheteur->dejaCommenter($id_match);
 
 if ($alreadyCommented) {
     header('Location: ../../mesBillets.php?error=already_commented');
