@@ -139,10 +139,15 @@ if($role === "ACHETEUR"){
     <label class="block text-sm font-semibold text-gray-300 mb-2">
         Nouveau mot de passe (optionnel)
     </label>
+    <form action="../php/resetPassword.php">
+        <input type="hidden" id="email" name="email" value="<?= $org->email ?>">
+
     <button type="submit"
             class="flex-1 py-4 bg-green-600 rounded-xl font-bold hover:bg-green-700 transition">
         Reset Password
     </button>
+
+    </form>
 </div>
 
 <!-- ================= ACTIONS ================= -->

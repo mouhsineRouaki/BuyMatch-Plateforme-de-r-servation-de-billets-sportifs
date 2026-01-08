@@ -16,9 +16,9 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
         return $org;
     }
     public function updateProfil(): bool {
-        $sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, phone=?, password=? WHERE id_user=?";
+        $sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, phone=? WHERE id_user=?";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$this->nom,$this->prenom,$this->email,$this->phone,password_hash($this->password, PASSWORD_DEFAULT),$this->id]);
+        return $stmt->execute([$this->nom,$this->prenom,$this->email,$this->phone,$this->id]);
     }
 
     public function creerMatch(string $date,string $heure,int $duree,string $statut,array $equipes,array $categories): int {

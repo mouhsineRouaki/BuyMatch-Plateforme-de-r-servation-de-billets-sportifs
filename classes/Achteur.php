@@ -29,11 +29,10 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
     }
 
-    public function updateProfil()
-    {
-        $stmt = $this->db->prepare("UPDATE utilisateur SET nom=?, prenom=?, email=?, phone=?, password=? WHERE id_user=?");
-        return $stmt->execute([$this->nom, $this->prenom, $this->email, $this->phone, password_hash($this->password, PASSWORD_DEFAULT), $this->id]);
-
+    public function updateProfil(): bool {
+        $sql = "UPDATE utilisateur SET nom=?, prenom=?, email=?, phone=? WHERE id_user=?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$this->nom,$this->prenom,$this->email,$this->phone,$this->id]);
     }
     public function getMyBillets(): array
     {

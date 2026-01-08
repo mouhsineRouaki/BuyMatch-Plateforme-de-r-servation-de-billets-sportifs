@@ -60,7 +60,7 @@ public static function envoyerLienReset(string $email): bool
     $stmt = $db->prepare("UPDATE utilisateur SET reset_token = ?, reset_expires = ? WHERE id_user = ?");
     $stmt->execute([$token, $expires, $user['id_user']]);
 
-    $resetLink = "https://tondomaine.com/pages/reset_password.php?token=" . urlencode($token);
+    $resetLink = "http://localhost/buyMatch/pages/reset_password.php?token=" . urlencode($token);
     $subject = "BuyMatch - Réinitialisez votre mot de passe";
     $message = "
     <html>
@@ -118,13 +118,14 @@ private static function envoyerEmail(string $to, string $subject, string $body):
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'ton.email@gmail.com';           // ← À CHANGER
-        $mail->Password   = 'ton-mot-de-passe-app';          // ← Mot de passe d'application Gmail
+        $mail->Username   = 'houtm27@gmail.com';
+        $mail->Password   = 'ton-mot-de-passe-app'; 
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
         $mail->CharSet    = 'UTF-8';
 
-        $mail->setFrom('ton.email@gmail.com', 'BuyMatch');
+        $mail->setFrom('houtm27@gmail.com', 'BuyMatch');
+        $mail->addAddress("rkmohsin66@gmail.com");
         $mail->addAddress($to);
 
         $mail->isHTML(true);
