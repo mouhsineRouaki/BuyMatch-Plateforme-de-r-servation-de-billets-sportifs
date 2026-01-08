@@ -99,14 +99,18 @@ if (!$match) {
             <form method="POST" class="bg-white rounded-2xl shadow-xl p-8 space-y-6" action="../../php/achteur/acheterBilletProcess.php">
                 <input type="hidden" name="id_match" value="<?= $matchId ?>">
                 <input type="hidden" id="idC" name="nom_category" value="<?= $match->categories[0]->nom ?>">
+<<<<<<< HEAD
 
+=======
+>>>>>>> bfeff27
                 <div>
                     <label class="block font-semibold mb-2">🎟 Catégorie</label>
                     <select id="categorie" name="categorie" required
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500">
                         <?php foreach ($match->categories as $c): ?>
                             <option value="<?= $c->prix ?>" data-prix="<?= $c->prix ?>" data-id="<?= $c->id_category ?>"
-                                data-place="<?= $c->nb_place ?>" data-availible="<?= $c->getNbplacAavailible($matchId) ?>">
+                                data-place="<?= $c->nb_place ?>" data-availible="<?= $c->getNbplacAavailible($matchId) ?>"
+                                data-nom="<?= $c->nom ?>">
                                 <?= htmlspecialchars($c->nom) ?> - <?= number_format($c->prix, 2) ?> €
                             </option>
                         <?php endforeach; ?>
@@ -162,7 +166,11 @@ if (!$match) {
 
         categorieSelect.addEventListener('change', () => {
             calculerPrix();
+<<<<<<< HEAD
             document.getElementById('idC').value = categorieSelect.options[categorieSelect.selectedIndex].dataset.id
+=======
+            document.getElementById('idC').value = categorieSelect.options[categorieSelect.selectedIndex].dataset.nom
+>>>>>>> bfeff27
             placeTotal.innerHTML = categorieSelect.options[categorieSelect.selectedIndex].dataset.availible + "/" + categorieSelect.options[categorieSelect.selectedIndex].dataset.place + " availible place"
         });
 
