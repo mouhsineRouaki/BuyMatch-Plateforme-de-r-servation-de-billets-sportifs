@@ -36,6 +36,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
     }
 
+
     public function getAvailableMatchs(): array
     {
         $stmt = $this->db->prepare("
@@ -60,7 +61,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
         return $matchs;
     }
 
-    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport,$category): bool
+    public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport,$category , $idCategory): bool
     {
         try {
             $this->db->beginTransaction();
@@ -80,8 +81,8 @@ class Achteur extends Utilisateur implements IModifiableProfil
 
             $insert = $this->db->prepare("
             INSERT INTO billet 
-            (id_acheteur, id_match, place, prix, QRCode, date_achat)
-            VALUES (?, ?, ?, ?, ?, NOW())
+            (id_acheteur, id_match, place, prix, QRCode, date_achat,id_category)
+            VALUES (?, ?, ?, ?, ?, NOW(),?)
         ");
 
             $qr = uniqid("BM-QR-");
@@ -91,7 +92,8 @@ class Achteur extends Utilisateur implements IModifiableProfil
                 $id_match,
                 $place,
                 $prix,
-                $qr
+                $qr,
+                $idCategory
             ]);
 
             $this->db->commit();
@@ -221,42 +223,37 @@ private function sendTicketMail(string $qrCode, float $prix ,$place ,$category ,
                 $imgData = file_get_contents($logoUrl);
                 if ($imgData !== false) {
                     file_put_contents($tmp, $imgData);
-                    $pdf->Image('@' . $imgData, 0, 18, $logoSize, $logoSize, '', '', '', true, 300, '', false, false, 0);
+                    $pdf->Image('@' . $imgData, $x, 18, $logoSize, $logoSize, '', '', '', true, 300, '', false, false, 0);
                 }
             } elseif (file_exists($logoUrl)) {
                 // Chemin local
-                $pdf->Image($logoUrl, 0, 18, $logoSize, $logoSize, '', '', '', false, 300);
+                $pdf->Image($logoUrl, $x, 18, $logoSize, $logoSize, '', '', '', false, 300);
             }
         }
     };
 
-    // Logo équipe 1
-    $addLogo($match->equipe1->logo, 20);
+    $addLogo($match->equipe1->logo, 10);
 
     $pdf->SetFont('helvetica', 'B', 15);
     $pdf->SetTextColor(...$light);
-    $pdf->SetXY(5, 25);
-    $pdf->Cell(30, 10, $match->equipe1->nom, 0, 0, 'C');
+    $pdf->SetXY(110, 25);
+    $pdf->Cell(40, 10, $match->equipe1->nom, 0, 0, 'C');
 
-    // VS
     $pdf->SetTextColor(...$emerald);
     $pdf->SetXY(90, 25);
     $pdf->Cell(30, 10, 'VS', 0, 0, 'C');
 
-    // Logo équipe 2
-    $addLogo($match->equipe2->logo, 150);
+    $addLogo($match->equipe2->logo, 160);
 
     $pdf->SetTextColor(...$light);
     $pdf->SetXY(110, 25);
-    $pdf->Cell(30, 10, $match->equipe2->nom, 0, 0, 'C');
+    $pdf->Cell(40, 10, $match->equipe2->nom, 0, 0, 'C');
 
-    // Détails match
     $pdf->SetFont('helvetica', '', 13);
     $pdf->SetTextColor(...$light);
     $pdf->SetXY(10, 48);
     $pdf->Cell(190, 10, '📅 ' . $match->date_match . '   |   🕐 ' . $match->heure . '   |   🏟 ' . $match->stade, 0, 1, 'C');
 
-    // === SECTION INFOS BILLET (fond clair) ===
     $pdf->SetFillColor(...$light);
     $pdf->SetTextColor(...$dark);
     $pdf->Rect(0, 60, 210, 50, 'F');
@@ -296,8 +293,6 @@ private function sendTicketMail(string $qrCode, float $prix ,$place ,$category ,
     $pdf->SetXY(0, 102);
     $pdf->Cell(210, 6, 'Référence : ' . $QRCode, 0, 1, 'C');
 
-    $pdf->SetXY(0, 106);
-    $pdf->Cell(210, 6, 'Présentez ce billet et une pièce d\'identité à l\'entrée du stade.', 0, 1, 'C');
 
     // QR Code (plus grand et centré en bas à droite)
     $pdf->write2DBarcode($QRCode, 'QRCODE,H', 150, 70, 40, 40);

@@ -20,16 +20,30 @@ class Category {
         $this->$name = $value;
     }
 
-    public function getNbplacAavailible($id_match){
+    public function getNbplacAavailible($id_match , $id_acheteur){
         $stmt =  $this->db->prepare("
             SELECT count(b.id_billet) as total from billet b
-            join matchf m on m.id_match  = b.id_match
-            join category c on c.id_match = b.id_match
-            where c.id_match = ? and c.id_category = ?
-            group by c.id_category
+            where b.id_match = ? and b.id_category = ? and id_acheteur = ?
         ");
-        $stmt->execute([$id_match ,$this->id_category]);
+        $stmt->execute([$id_match ,$this->id_category,$id_acheteur]);
         return $stmt->fetch(PDO::FETCH_ASSOC)["total"];
+    }
+    public function getNbBilletsVendus(int $id_match): int
+    {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) AS total 
+            FROM billet 
+            WHERE id_match = ? AND id_category = ?
+        ");
+        $stmt->execute([$id_match, $this->id_category]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) ($result['total'] ?? 0);
+    }
+
+    public function getNbPlacesDisponibles(int $id_match): int
+    {
+        $vendus = $this->getNbBilletsVendus($id_match);
+        return max(0, $this->nb_place - $vendus);
     }
 
     public function save(): void {
