@@ -15,8 +15,7 @@ $match = MatchSport::getMatchById($matchId);
 if (!$match) {
     die("Match introuvable");
 }
-
-$billetsDejaAchetes = $acheteur->getNbBilletsAchetesPourMatch($matchId , );
+$billetsDejaAchetes = $acheteur->getNbBilletsAchetesPourMatch($matchId);
 $maxBilletsParAcheteur = 4;
 $peutEncoreAcheter = ($billetsDejaAchetes < $maxBilletsParAcheteur);
 
@@ -127,7 +126,7 @@ unset($_SESSION['message']);
             <?php 
             $hasAvailableCategory = false;
             foreach ($match->categories as $c) {
-                $vendus = $acheteur->getNbBilletsVendus($matchId,$c); // À implémenter (voir plus bas)
+                $vendus = $c->getNbBilletsVendus($matchId); // À implémenter (voir plus bas)
                 $disponibles = $c->nb_place - $vendus;
                 if ($disponibles > 0) {
                     $hasAvailableCategory = true;
@@ -150,6 +149,7 @@ unset($_SESSION['message']);
                     <input type="hidden" name="id_match" value="<?= $matchId ?>">
                     <input type="hidden" id="nomCategory" name="nom_category">
                     <input type="hidden" id="idCategory" name="id_category">
+                    <input type="hidden" id="prix" name="prix">
 
                     <!-- Catégorie -->
                     <div>
@@ -188,6 +188,7 @@ unset($_SESSION['message']);
                     <div class="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-6 text-center">
                         <p class="text-lg font-semibold text-slate-700 mb-2">Prix total</p>
                         <p class="text-4xl font-extrabold text-emerald-600" id="prixTotal">0.00 MAD</p>
+
                     </div>
 
                     <!-- Bouton d'achat -->
@@ -211,6 +212,7 @@ unset($_SESSION['message']);
 <script>
     const select = document.getElementById('categorie');
     const prixTotal = document.getElementById('prixTotal');
+    const prixI = document.getElementById('prix');
     const dispoText = document.getElementById('dispoText');
     const btnAcheter = document.getElementById('btnAcheter');
 
@@ -219,15 +221,10 @@ unset($_SESSION['message']);
         const prix = parseFloat(option.dataset.prix || 0);
         const disponibles = parseInt(option.dataset.disponibles || 0);
         const total = parseInt(option.dataset.total || 0);
-
-        // Mise à jour des champs cachés
         document.getElementById('nomCategory').value = option.dataset.nom;
         document.getElementById('idCategory').value = option.dataset.id;
-
-        // Prix
         prixTotal.textContent = prix.toFixed(2) + ' MAD';
-
-        // Texte disponibilité
+        prixI.value = prix.toFixed(2)
         let message = `${disponibles} / ${total} places disponibles`;
         let color = 'text-emerald-600';
 
@@ -240,13 +237,11 @@ unset($_SESSION['message']);
         }
 
         dispoText.innerHTML = `<span class="${color} font-bold">${message}</span>`;
-
-        // Désactiver le bouton si plus de places
         btnAcheter.disabled = (disponibles <= 0);
     }
 
     select.addEventListener('change', updateUI);
-    updateUI(); // Au chargement
+    updateUI();
 </script>
 
 </body>

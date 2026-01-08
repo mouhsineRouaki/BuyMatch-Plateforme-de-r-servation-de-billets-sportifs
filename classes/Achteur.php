@@ -60,6 +60,16 @@ class Achteur extends Utilisateur implements IModifiableProfil
         }
         return $matchs;
     }
+    public function getNbBilletsAchetesPourMatch(int $id_match): int
+{
+    $stmt = $this->db->prepare("
+        SELECT COUNT(*) 
+        FROM billet 
+        WHERE id_acheteur = ? AND id_match = ?
+    ");
+    $stmt->execute([$this->id, $id_match]);
+    return (int) $stmt->fetchColumn();
+}
 
     public function AcheterBillet(int $id_match, float $prix, int $place,MatchSport $matchSport,$category , $idCategory): bool
     {
