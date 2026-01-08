@@ -100,4 +100,28 @@ class MatchSport {
         }
     }
 
+     public static function getAvailableMatchs(): array{
+        $db  = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("
+            SELECT m.*, group_concat(e.id_equipe) as idE , group_concat(e.nom) as nomE, group_concat(e.logo) as logoE
+            FROM matchf m
+            JOIN match_equipe me on me.id_match = m.id_match
+            JOIN equipe e ON me.id_equipe = e.id_equipe 
+            WHERE m.statut = 'ACCEPTED'
+            group by m.id_match
+        ");
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $matchs = [];
+        foreach ($result as $r) {
+            $listId = explode(",", $r["idE"]);
+            $listNom = explode(",", $r["nomE"]);
+            $listLogo = explode(",", $r["logoE"]);
+            $equipe1 = new Equipe($listId[0], $listNom[0], $listLogo[0]);
+            $equipe2 = new Equipe($listId[1], $listNom[1], $listLogo[1]);
+            $matchs[] = new MatchSport($r["id_match"], $r["date_match"], $r["heure"], $r["duree"], $r["stade"], $r["id_statistique"], $equipe1, $equipe2);
+        }
+        return $matchs;
+    }
+
 }
