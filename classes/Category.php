@@ -1,16 +1,18 @@
 <?php
 class Category {
-    private $id_category;
+    private ?int $id_category;
     private string $nom;
     private float $prix;
     private int $nb_place;
+    private $id_match;
     private PDO $db;
 
-    public function __construct($id_category,string $nom, float $prix, int $nb_place) {
+    public function __construct(?int $id_category,string $nom, float $prix, int $nb_place , int $id_match) {
         $this->id_category = $id_category;
         $this->nom = $nom;
         $this->prix = $prix;
         $this->nb_place = $nb_place;
+        $this->id_match = $id_match;
         $this->db = Database::getInstance()->getConnection();
     }
     public function __get($name){
@@ -55,7 +57,8 @@ class Category {
             $this->nom,
             $this->prix,
             $this->nb_place,
-            $this->id_b
+            $this->id_match
         ]);
+        $this->id_category = $this->db->lastInsertId();
     }
 }

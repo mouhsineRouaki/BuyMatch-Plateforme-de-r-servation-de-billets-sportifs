@@ -32,6 +32,7 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
         }
         foreach ($categories as $cat) {
             $category = new Category(
+                null , 
                 $cat['nom'],
                 $cat['prix'],
                 $cat['nb_place'],
@@ -55,40 +56,46 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function getMesMatchs(): array {
+    public function getMesMatchs(): array
+{
+    $sql = "
+        SELECT 
+            m.id_match, 
+            m.date_match, 
+            m.heure,
+            m.duree,               -- ← Ajouté
+            m.stade,               -- ← Ajouté
+            m.id_statistique,
+            s.nb_billet_vendus,
+            s.chiffre_affaire,
+            m.note_moyenne
+        FROM matchf m
+        LEFT JOIN statistique s ON s.id_statistique = m.id_statistique
+        WHERE m.id_organisateur = ?
+        ORDER BY m.date_match DESC
+    ";
 
-        $sql = "
-            SELECT 
-                m.id_match, m.date_match, m.heure,
-                s.nb_billet_vendus, s.chiffre_affaire, m.note_moyenne
-            FROM matchf m
-            LEFT JOIN statistique s ON s.id_statistique = m.id_statistique
-            WHERE m.id_organisateur = ?
-            ORDER BY m.date_match DESC
-        ";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$this->id]);
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$this->id]);
+    $matchs = [];
 
-        $matchs = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $stat = new Statistique(
+            $row['nb_billet_vendus'] ?? 0,
+            $row['chiffre_affaire'] ?? 0,
+            $row['note_moyenne'] ?? null
+        );
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $stat = new Statistique(
-                $row['nb_billet_vendus'] ?? 0,
-                $row['chiffre_affaire'] ?? 0,
-                $row['note_moyenne']
-            );
+        $matchComplet = MatchSport::getMatchById($row['id_match']);
 
-            $matchs[] = new MatchSport(
-                $row['id_match'],
-                $row['date_match'],
-                $row['heure'],
-                $stat
-            );
-        }
+        $matchComplet->statistique = $stat;
 
-        return $matchs;
+        $matchs[] = $matchComplet;
     }
+
+    return $matchs;
+}
     public function logout(): void{
         session_destroy();
     }

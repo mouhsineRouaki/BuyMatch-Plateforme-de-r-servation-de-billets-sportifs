@@ -78,7 +78,7 @@ $equipes = Equipe::getEquipes()
                 class="w-full p-4 rounded-xl bg-white text-gray-900 focus:ring-4 focus:ring-green-500">
             <option value="">Équipe domicile</option>
             <?php foreach ($equipes as $e): ?>
-                <option value="<?= $e->id?>">
+                <option value="<?= $e->id ?>">
                     <?= htmlspecialchars($e->nom) ?>
                 </option>
             <?php endforeach; ?>

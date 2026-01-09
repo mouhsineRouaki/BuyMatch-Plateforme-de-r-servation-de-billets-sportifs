@@ -6,7 +6,7 @@ class Equipe {
     private PDO $db;
 
     public function __construct($id,string $nom , $logo) {
-        $this->id;
+        $this->id = $id;
         $this->nom = $nom;
         $this->logo = $logo;
         $this->db = Database::getInstance()->getConnection();
