@@ -459,7 +459,7 @@ $matchs = MatchSport::getAvailableMatchs(); // Utilisation de la méthode statiq
                     <div class="space-y-3 mt-4">
                         <!-- Acheteur Option -->
                         <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition">
-                            <input type="radio" name="role" value="acheteur" class="mt-1 mr-4 w-5 h-5 cursor-pointer" required>
+                            <input type="radio" name="role" value="ACHETEUR" class="mt-1 mr-4 w-5 h-5 cursor-pointer" required>
                             <div class="flex-1">
                                 <div class="font-bold text-gray-900 text-lg">🎫 Acheteur</div>
                                 <div class="text-sm text-gray-600 mt-1">Achetez des billets pour vos événements favoris</div>
@@ -468,7 +468,7 @@ $matchs = MatchSport::getAvailableMatchs(); // Utilisation de la méthode statiq
                         
                         <!-- Organisateur Option -->
                         <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition">
-                            <input type="radio" name="role" value="organisateur" class="mt-1 mr-4 w-5 h-5 cursor-pointer" required>
+                            <input type="radio" name="role" value="ORGANISATEUR" class="mt-1 mr-4 w-5 h-5 cursor-pointer" required>
                             <div class="flex-1">
                                 <div class="font-bold text-gray-900 text-lg">📊 Organisateur</div>
                                 <div class="text-sm text-gray-600 mt-1">Créez et gérez vos événements sportifs</div>

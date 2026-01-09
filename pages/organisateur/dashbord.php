@@ -125,7 +125,7 @@ $matchs = $organisateur->getMesMatchs();
                     </h3>
 
                     <p class="text-gray-300">
-                        📅 <?= $match->date ?> • 🕐 <?= $match->heure ?>
+                        📅 <?= $match->date_match ?> • 🕐 <?= $match->heure ?>
                     </p>
 
                     <p class="text-gray-400 mt-1">
@@ -139,7 +139,7 @@ $matchs = $organisateur->getMesMatchs();
                     </p>
 
                     <p class="text-sm text-gray-400 mt-1">
-                        ⭐ <?= $match->statistique->noteMoyenne ?? '—' ?>
+                        ⭐ <?= $match->statistique->note_moyenne ?? '—' ?>
                     </p>
                 </div>
             </div>

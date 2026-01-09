@@ -36,7 +36,7 @@ class Register extends Utilisateur {
             $this->db->prepare("INSERT INTO acheteur (id_user) VALUES (?)")->execute([$idUser]);
         } elseif ($this->role === "ORGANISATEUR") {
             $this->db->prepare("INSERT INTO organisateur (id_user) VALUES (?)")->execute([$idUser]);
-        } elseif ($this->role === "ADMINISTRATEUR") {
+        } else{
             $this->db->prepare("INSERT INTO administrateur (id_user) VALUES (?)")->execute([$idUser]);
         }
         return [
