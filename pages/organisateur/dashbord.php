@@ -139,7 +139,7 @@ $matchs = $organisateur->getMesMatchs();
                     </p>
 
                     <p class="text-sm text-gray-400 mt-1">
-                        ⭐ <?= $match->statistique->note_moyenne ?? '—' ?>
+                        ⭐ <?= $match->getNoteMoyenne() ?? '—' ?>
                     </p>
                 </div>
             </div>

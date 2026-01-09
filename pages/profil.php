@@ -58,10 +58,9 @@ if($role === "ACHETEUR"){
             </div>
 
             <ul class="hidden md:flex gap-8 font-semibold text-slate-200">
-                <li><a href="dashboard.php" class="hover:text-emerald-400 transition">Dashboard</a></li>
-                <li><a href="matches.php" class="text-emerald-400 underline underline-offset-4">Matchs</a></li>
-                <li><a href="mesBillets.php" class="hover:text-emerald-400 transition">Mes billets</a></li>
-                <li><a href="../profil.php" class="hover:text-emerald-400 transition">Profil</a></li>
+                <li><a href="organisateur/dashbord.php" class="hover:text-emerald-400 transition">Dashboard</a></li>
+                <li><a href="organisateur/creeDemandeMatch.php" class="text-emerald-400 underline underline-offset-4">creer Matchs</a></li>
+                <li><a href="profil.php" class="hover:text-emerald-400 transition">Profil</a></li>
             </ul>
 
             <button onclick="logout()"
