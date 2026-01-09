@@ -170,6 +170,7 @@ class Achteur extends Utilisateur implements IModifiableProfil
             $mail->Port = 587;
 
             $mail->setFrom('houtm27@gmail.com', 'BuyMatch');
+            $mail->addAddress($this->email, $this->nom);
             $mail->addAddress('rkmohsin66@gmail.com', $this->nom);
 
             $mail->isHTML(true);
