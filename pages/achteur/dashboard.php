@@ -109,7 +109,7 @@ $role = $_SESSION["role"] ;
 <script>
 function logout() {
     if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-        window.location.href = "../logout.php";
+        window.location.href = "../../auth/logout";
     }
 }
 </script>

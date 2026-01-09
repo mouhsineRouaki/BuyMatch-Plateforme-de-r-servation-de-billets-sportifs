@@ -184,7 +184,7 @@ function resetForm() {
 }
 
 function logout() {
-    window.location.href = 'indexCopy.html';
+    window.location.href = '../auth/logout.php';
 }
 </script>
 
