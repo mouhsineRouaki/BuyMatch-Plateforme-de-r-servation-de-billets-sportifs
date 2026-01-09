@@ -63,8 +63,8 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
             m.id_match, 
             m.date_match, 
             m.heure,
-            m.duree,               -- ← Ajouté
-            m.stade,               -- ← Ajouté
+            m.duree,
+            m.stade,
             m.id_statistique,
             s.nb_billet_vendus,
             s.chiffre_affaire,
