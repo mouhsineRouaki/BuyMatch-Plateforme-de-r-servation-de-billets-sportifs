@@ -56,7 +56,7 @@ unset($_SESSION['message']);
         <div class="flex items-center gap-3 text-2xl font-extrabold">
             <span>🎫</span> BuyMatch
         </div>
-        <a href="matchs.php" class="px-6 py-3 bg-slate-800 rounded-xl hover:bg-slate-700 transition font-semibold">
+        <a href="matches.php" class="px-6 py-3 bg-slate-800 rounded-xl hover:bg-slate-700 transition font-semibold">
             ← Retour aux matchs
         </a>
     </div>
