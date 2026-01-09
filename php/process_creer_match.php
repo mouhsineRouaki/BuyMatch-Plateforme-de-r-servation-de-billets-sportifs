@@ -14,4 +14,4 @@ $organisateur->creerMatch(
     $_POST['categories']
 );
 
-header("Location: dashboard.php");
+header("Location: ../organisateur/dashboard.php");

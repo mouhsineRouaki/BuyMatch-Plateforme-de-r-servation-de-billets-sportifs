@@ -77,20 +77,11 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
 
     $stmt = $this->db->prepare($sql);
     $stmt->execute([$this->id]);
-
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $matchs = [];
 
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $stat = new Statistique(
-            $row['nb_billet_vendus'] ?? 0,
-            $row['chiffre_affaire'] ?? 0,
-            $row['note_moyenne'] ?? 0
-        );
-
+    foreach ($result as $row) {
         $matchComplet = MatchSport::getMatchById($row['id_match']);
-
-        $matchComplet->statistique = $stat;
-
         $matchs[] = $matchComplet;
     }
 

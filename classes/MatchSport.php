@@ -68,28 +68,61 @@ class MatchSport {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $categories = [];
         foreach($result as $r){
-            $categories[] = new Category($r["id_category"],$r["nom"], $r["prix"] , $r["nb_place"] );
+            $categories[] = new Category($r["id_category"],$r["nom"], $r["prix"] , $r["nb_place"] ,$r["id_match"]  );
         }
         return $categories;
 
     }
-    public static function getMatchById($id_match){
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT m.*, group_concat(e.id_equipe) as idE , group_concat(e.nom) as nomE, group_concat(e.logo) as logoE
-            FROM matchf m
-            JOIN match_equipe me on me.id_match = m.id_match
-            JOIN equipe e ON me.id_equipe = e.id_equipe 
-            WHERE m.id_match = ?
-            group by m.id_match");
-        $stmt->execute([$id_match]);
-        $r= $stmt->fetch(PDO::FETCH_ASSOC);
-        $listId = explode(",",$r["idE"]);
-        $listNom = explode(",",$r["nomE"]);
-        $listLogo = explode(",",$r["logoE"]);
-        $equipe1 = new Equipe($listId[0] , $listNom[0] , $listLogo[0]);
-        $equipe2 = new Equipe($listId[1] , $listNom[1] , $listLogo[1]);
-        return  new MatchSport($r["id_match"] ,$r["date_match"] , $r["heure"] ,$r["duree"] ,$r["stade"], $r["id_statistique"] , $equipe1 , $equipe2 );
+    public static function getMatchById($id_match)
+{
+    $db = Database::getInstance()->getConnection();
+    
+    $stmt = $db->prepare("SELECT m.*, 
+        group_concat(e.id_equipe) as idE , 
+        group_concat(e.nom) as nomE, 
+        group_concat(e.logo) as logoE
+        FROM matchf m
+        LEFT JOIN match_equipe me on me.id_match = m.id_match
+        LEFT JOIN equipe e ON me.id_equipe = e.id_equipe 
+        WHERE m.id_match = ?
+        GROUP BY m.id_match");
+    $stmt->execute([$id_match]);
+    $r = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$r || !$r['idE']) {
+        return null;
     }
+
+    $listId   = explode(",", $r["idE"]   ?? '');
+    $listNom  = explode(",", $r["nomE"]  ?? '');
+    $listLogo = explode(",", $r["logoE"] ?? '');
+
+    $equipe1 = new Equipe(
+        $listId[0]   ?? null,
+        $listNom[0]  ?? '',
+        $listLogo[0] ?? null
+    );
+
+    $equipe2 = null;
+    if (isset($listId[1])) {
+        $equipe2 = new Equipe(
+            $listId[1],
+            $listNom[1],
+            $listLogo[1]
+        );
+    }
+
+    return new MatchSport(
+        $id_match,
+        $r["date_match"] ?? '',
+        $r["heure"] ?? '',
+        $r["duree"] ?? null,
+        $r["stade"] ?? null,
+        $r["id_statistique"] ?? null,
+        $equipe1,
+        $equipe2
+    );
+}
 
     public function getCategoryById($id):?Category{
         for( $i = 0 ; $i <= count($this->categories) ; $i++){

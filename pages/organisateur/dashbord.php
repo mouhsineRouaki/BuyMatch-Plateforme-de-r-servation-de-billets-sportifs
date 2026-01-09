@@ -8,6 +8,7 @@ require_once "../../classes/MatchSport.php";
 require_once "../../classes/Statistique.php";
 
 $organisateur = Organisateur::getOrganisateurConnected();
+$id = $organisateur->id;
 $stats = $organisateur->getStatistiquesGlobales();
 $matchs = $organisateur->getMesMatchs();
 ?>
@@ -120,7 +121,7 @@ $matchs = $organisateur->getMesMatchs();
 
                 <div>
                     <h3 class="text-2xl font-bold mb-1">
-                        Match #<?= $match->id ?>
+                        Match #<?= $match->id_match ?>
                     </h3>
 
                     <p class="text-gray-300">
