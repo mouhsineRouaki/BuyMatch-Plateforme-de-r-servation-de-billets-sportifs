@@ -61,17 +61,15 @@ $equipes = Equipe::getEquipes()
     </div>
 </section>
 
-<!-- ================= FORM ================= -->
 <section class="py-20">
 <div class="max-w-4xl mx-auto px-6">
 <div class="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-10">
 
 <form method="POST" action="../../php/process_creer_match.php" onsubmit="return validateTeams()">
 
-<!-- ===== ÉQUIPES ===== -->
 <div class="mb-12">
     <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
-        ⚔️ Équipes
+        Équipes
     </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -99,7 +97,7 @@ $equipes = Equipe::getEquipes()
     </div>
 
     <p id="teamError" class="hidden mt-4 text-red-400 font-semibold">
-        ⚠️ Les équipes doivent être différentes
+        Les équipes doivent être différentes
     </p>
 </div>
 
@@ -119,17 +117,26 @@ $equipes = Equipe::getEquipes()
     </div>
 </div>
 
+<div class="mb-12">
+    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+        satde
+    </h3>
+
+    <input type="text" name="stade" placeholder="Stade" required class="w-full p-4 rounded-xl bg-white text-gray-900 focus:ring-4 focus:ring-green-500">
+
+</div>
+
 <!-- ===== CATÉGORIES ===== -->
 <div class="mb-12">
     <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
-        🎫 Catégories de billets
+        Catégories de billets
     </h3>
 
     <div id="categories" class="space-y-4"></div>
 
     <button type="button" onclick="addCategory()"
             class="mt-4 px-6 py-3 bg-blue-600 rounded-xl hover:bg-blue-700 transition font-semibold">
-        + Ajouter une catégorie
+        Ajouter une catégorie
     </button>
 </div>
 
@@ -137,7 +144,7 @@ $equipes = Equipe::getEquipes()
 <div class="flex flex-col md:flex-row gap-6">
     <button type="submit"
             class="flex-1 py-4 bg-green-600 rounded-xl font-bold hover:bg-green-700 transition">
-        🚀 Créer le match
+        Créer le match
     </button>
 
     <a href="dashboard.php"
@@ -158,12 +165,15 @@ $equipes = Equipe::getEquipes()
 
 <!-- ================= JS ================= -->
 <script>
+const equipe1 = document.getElementById('equipe1');
+const equipe2 = document.getElementById('equipe2');
+const teamError = document.getElementById('teamError');
+
 let index = 0;
 
 function addCategory() {
     const div = document.createElement("div");
-    div.className =
-        "grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl bg-white text-gray-900 shadow";
+    div.className = "grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl bg-white text-gray-900 shadow";
 
     div.innerHTML = `
         <input name="categories[${index}][nom]" placeholder="Nom catégorie" required
@@ -174,7 +184,7 @@ function addCategory() {
                class="p-3 rounded-lg border focus:ring-2 focus:ring-blue-500">
         <button type="button" onclick="this.parentElement.remove()"
                 class="bg-red-600 text-white rounded-lg font-bold hover:bg-red-700">
-            X
+            Supprimer
         </button>
     `;
     document.getElementById("categories").appendChild(div);
@@ -182,14 +192,12 @@ function addCategory() {
 }
 
 function checkDuplicate() {
-    teamError.classList.toggle(
-        "hidden",
-        !(equipe1.value && equipe2.value && equipe1.value === equipe2.value)
-    );
+    const sameTeam = equipe1.value && equipe2.value && equipe1.value === equipe2.value;
+    teamError.classList.toggle("hidden", !sameTeam);
 }
 
 function validateTeams() {
-    if (equipe1.value === equipe2.value) {
+    if (equipe1.value === equipe2.value && equipe1.value !== "") {
         alert("Les équipes doivent être différentes !");
         return false;
     }
@@ -197,7 +205,9 @@ function validateTeams() {
 }
 
 function logout() {
-    window.location.href = "../../logout.php";
+    if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+        window.location.href = "../../logout.php";
+    }
 }
 </script>
 

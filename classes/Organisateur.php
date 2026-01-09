@@ -21,11 +21,11 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
         return $stmt->execute([$this->nom,$this->prenom,$this->email,$this->phone,$this->id]);
     }
 
-    public function creerMatch(string $date,string $heure,int $duree,string $statut,array $equipes,array $categories): int {
+    public function creerMatch(string $date,string $heure,int $duree,string $statut,$stade ,array $equipes,array $categories): int {
         $this->db->exec("INSERT INTO statistique () VALUES ()");
         $idStat = $this->db->lastInsertId();
-        $stmt = $this->db->prepare("INSERT INTO matchf (date_match, heure, duree, statut, id_organisateur, id_statistique) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$date,$heure,$duree,$statut,$this->id,$idStat]);
+        $stmt = $this->db->prepare("INSERT INTO matchf (date_match, heure, duree, statut, id_organisateur, id_statistique , stade) VALUES (?, ?, ?, ?, ?, ? , ?)");
+        $stmt->execute([$date,$heure,$duree,$statut,$this->id,$idStat , $stade]);
         $idMatch = $this->db->lastInsertId();
         foreach ($equipes as $idEquipe) {
             Equipe::lierEquipeMatch($idMatch, $idEquipe);

@@ -9,6 +9,7 @@ $organisateur->creerMatch(
     $_POST['heure'],
     $_POST['duree'],
     "EN_ATTENTE",
+    $_POST["stade"],
     $_POST['equipes'],
     $_POST['categories']
 );
