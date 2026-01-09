@@ -101,10 +101,9 @@ $equipes = Equipe::getEquipes()
     </p>
 </div>
 
-<!-- ===== DATE / HEURE ===== -->
 <div class="mb-12">
     <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
-        🕒 Date & Heure
+        Date & Heure
     </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
