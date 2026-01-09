@@ -1,9 +1,7 @@
 <?php
 require_once "../../config/Database.php";
-
-$db = Database::getInstance()->getConnection();
-$equipes = $db->query("SELECT id_equipe, nom FROM equipe ORDER BY nom")
-              ->fetchAll(PDO::FETCH_ASSOC);
+require_once "../../classes/Equipe.php";
+$equipes = Equipe::getEquipes()
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -82,8 +80,8 @@ $equipes = $db->query("SELECT id_equipe, nom FROM equipe ORDER BY nom")
                 class="w-full p-4 rounded-xl bg-white text-gray-900 focus:ring-4 focus:ring-green-500">
             <option value="">Équipe domicile</option>
             <?php foreach ($equipes as $e): ?>
-                <option value="<?= $e['id_equipe'] ?>">
-                    <?= htmlspecialchars($e['nom']) ?>
+                <option value="<?= $e->id?>">
+                    <?= htmlspecialchars($e->nom) ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -92,8 +90,8 @@ $equipes = $db->query("SELECT id_equipe, nom FROM equipe ORDER BY nom")
                 class="w-full p-4 rounded-xl bg-white text-gray-900 focus:ring-4 focus:ring-green-500">
             <option value="">Équipe visiteur</option>
             <?php foreach ($equipes as $e): ?>
-                <option value="<?= $e['id_equipe'] ?>">
-                    <?= htmlspecialchars($e['nom']) ?>
+                <option value="<?= $e->id ?>">
+                    <?= htmlspecialchars($e->nom) ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -199,7 +197,7 @@ function validateTeams() {
 }
 
 function logout() {
-    window.location.href = "../../index.php";
+    window.location.href = "../../logout.php";
 }
 </script>
 

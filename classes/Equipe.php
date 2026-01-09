@@ -29,4 +29,14 @@ class Equipe {
         $db->prepare("INSERT INTO match_equipe VALUES (?, ?)")->execute([$idMatch, $idEquipe]);
         return $db->prepare("INSERT INTO match_equipe VALUES (?, ?)")->execute([$idMatch, $idEquipe]);
     }
+
+    public static function getEquipes(){
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->query("SELECT id_equipe, nom ,logo FROM equipe ORDER BY nom")->fetchAll(PDO::FETCH_ASSOC);
+        $listEquipe = [];
+        foreach($stmt as $e){
+            $listEquipe[] = new Equipe($e["id_equipe"] , $e["nom"] , $e["logo"]);
+        }
+        return $listEquipe;
+    }
 }
