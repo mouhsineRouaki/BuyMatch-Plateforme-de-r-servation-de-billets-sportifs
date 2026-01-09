@@ -84,7 +84,7 @@ class Organisateur extends Utilisateur implements IModifiableProfil {
         $stat = new Statistique(
             $row['nb_billet_vendus'] ?? 0,
             $row['chiffre_affaire'] ?? 0,
-            $row['note_moyenne'] ?? null
+            $row['note_moyenne'] ?? 0
         );
 
         $matchComplet = MatchSport::getMatchById($row['id_match']);

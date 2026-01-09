@@ -141,7 +141,6 @@ $matchs = $organisateur->getMesMatchs();
                         ⭐ <?= $match->statistique->noteMoyenne ?? '—' ?>
                     </p>
                 </div>
-
             </div>
         <?php endforeach; ?>
     </div>
