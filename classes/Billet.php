@@ -46,7 +46,9 @@ class Billet {
                 $data['id_category'],
                 $data['nom'],
                 $data['prix'],
-                $data['nb_place']
+                $data['nb_place'],
+                $data['id_match']
+
             );
         }
         return $this->category;
