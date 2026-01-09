@@ -157,4 +157,18 @@ class MatchSport {
         return $matchs;
     }
 
+    public function getNoteMoyenne(): float
+{
+    $stmt = $this->db->prepare("
+        SELECT COALESCE(ROUND(AVG(note), 1), 0) AS moyenne
+        FROM commentaire 
+        WHERE id_match = ?
+    ");
+    
+    $stmt->execute([$this->id_match]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    return  $result['moyenne'];
+}
+
 }
